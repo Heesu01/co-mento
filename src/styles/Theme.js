@@ -1,32 +1,31 @@
 import { css } from "styled-components";
+import "./font.css";
 
 export const Theme = {
   fonts: {
     logo: css`
-      font-family: "", sans-serif;
-      font-size: 30px;
+      font-family: "Pretendard";
+      font-size: 26px;
+      font-weight: 600;
     `,
     default: css`
-      font-family: "", sans-serif;
-      font-size: 20px;
+      font-family: "Pretendard", sans-serif;
+      font-size: 13px;
     `,
     title: css`
-      font-family: "", sans-serif;
-      font-style: normal;
-      font-size: 54px;
+      font-family: "Pretendard", sans-serif;
+      font-size: 30px;
     `,
     other: css`
       font-family: "", sans-serif;
-      font-weight: 300;
-      font-style: normal;
     `,
   },
   colors: {
     white: "#fff",
+    black: "#000",
     gray: "#9A9A9A",
     gray2: "#E9E9E9",
-    black: "#000",
-    red: "#FF4040",
+    red: "#FF4444",
   },
   breakpoints: {
     mobile: "480px",
