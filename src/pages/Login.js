@@ -74,6 +74,7 @@ const P = styled.p`
   display: flex;
   justify-content: flex-end;
   color: ${(props) => props.theme.colors.gray};
+  margin-right: 10px;
 
   span {
     color: ${(props) => props.theme.colors.pink};
@@ -87,5 +88,9 @@ const Btn = styled.button`
   background-color: ${(props) => props.theme.colors.pink};
   margin: 10px 0;
   color: ${(props) => props.theme.colors.white};
+
+  &:hover {
+    background-color: ${(props) => props.theme.colors.red};
+  }
 `;
 export default Login;
