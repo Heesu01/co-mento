@@ -1,7 +1,10 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const Login = () => {
+  const navigate = useNavigate();
+
   return (
     <Container>
       <Logo>Co-Mento</Logo>
@@ -11,9 +14,10 @@ const Login = () => {
         <Title>비밀번호</Title>
         <Input placeholder="비밀번호를 입력해주세요."></Input>
         <P>
-          계정이 없으신가요? <span>회원가입</span>
+          계정이 없으신가요?{" "}
+          <span onClick={() => navigate("/auth/join")}>회원가입</span>
         </P>
-        <Btn>로그인</Btn>
+        <Btn onClick={() => navigate("/")}>로그인</Btn>
       </LoginBox>
     </Container>
   );
