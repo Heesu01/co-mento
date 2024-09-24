@@ -1,7 +1,7 @@
 import React from "react";
 
 const Join = () => {
-  return <div></div>;
+  return <div>안녕하세요</div>;
 };
 
 export default Join;
