@@ -9,22 +9,25 @@ import ProblemList from "./pages/ProblemList";
 import Rank from "./pages/Rank";
 import Review from "./pages/Review";
 import Submit from "./pages/Submit";
+import Layout from "./components/Layout";
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Navigate to="/main" />} />
-      <Route path="/main" element={<Main />} />
-      <Route path="/auth/login" element={<Login />} />
-      <Route path="/auth/join" element={<Join />} />
-      <Route path="/mycode" element={<Mycode />} />
-      <Route path="/mypage" element={<Mypage />} />
-      <Route path="/problem" element={<Problem />} />
-      <Route path="/problemlist" element={<ProblemList />} />
-      <Route path="/rank" element={<Rank />} />
-      <Route path="/review" element={<Review />} />
-      <Route path="/submit" element={<Submit />} />
-    </Routes>
+    <Layout>
+      <Routes>
+        <Route path="/" element={<Navigate to="/main" />} />
+        <Route path="/main" element={<Main />} />
+        <Route path="/auth/login" element={<Login />} />
+        <Route path="/auth/join" element={<Join />} />
+        <Route path="/mycode" element={<Mycode />} />
+        <Route path="/mypage" element={<Mypage />} />
+        <Route path="/problem" element={<Problem />} />
+        <Route path="/problemlist" element={<ProblemList />} />
+        <Route path="/rank" element={<Rank />} />
+        <Route path="/review" element={<Review />} />
+        <Route path="/submit" element={<Submit />} />
+      </Routes>
+    </Layout>
   );
 }
 
