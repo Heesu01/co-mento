@@ -1,12 +1,14 @@
 import React from "react";
 import styled from "styled-components";
-// import Header from "./Header";
+import Header from "./Header";
 import Footer from "./Footer";
 
 const Layout = ({ children }) => {
   return (
     <LayoutContainer>
-      <HeaderWrapper>{/* <Header /> */}</HeaderWrapper>
+      <HeaderWrapper>
+        <Header />
+      </HeaderWrapper>
       <Main>{children}</Main>
       <FooterBox>
         <Footer />
