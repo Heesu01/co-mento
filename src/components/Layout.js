@@ -24,7 +24,7 @@ const LayoutContainer = styled.div`
 `;
 
 const HeaderWrapper = styled.div`
-  height: 60px;
+  height: 80px;
 `;
 
 const Main = styled.main`
