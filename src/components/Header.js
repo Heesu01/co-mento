@@ -29,7 +29,7 @@ const Container = styled.div`
   height: 80px;
   display: flex;
   align-items: center;
-  border-bottom: 2px solid ${(props) => props.theme.colors.red};
+  border-bottom: 1px solid ${(props) => props.theme.colors.gray2};
   padding: 0 40px;
   justify-content: space-between;
 `;
