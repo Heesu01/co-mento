@@ -96,9 +96,9 @@ const Book = () => {
 const Container = styled.div`
   width: 100%;
   height: auto;
-  background-color: ${(props) => props.theme.colors.pink};
+  background-color: ${(props) => props.theme.colors.deepPink};
   border-radius: 5px;
-  padding: 40px 20px;
+  padding: 40px 40px;
   padding-bottom: 0;
 `;
 const Top = styled.div`
@@ -117,8 +117,8 @@ const ItemBox = styled.div`
   justify-content: space-between;
 `;
 const Item = styled.div`
-  background-color: #2e2e2e;
-  width: 31%;
+  background-color: ${(props) => props.theme.colors.black2};
+  width: 30%;
   height: 100%;
   height: 400px;
   border-radius: 10px;
@@ -137,7 +137,7 @@ const Cover = styled.div`
   width: 100%;
   height: 50%;
   border-radius: 0 0 10px 10px;
-  background-color: #f6e4db;
+  background-color: ${(props) => props.theme.colors.beige};
   padding: 30px;
   display: flex;
   flex-direction: column;

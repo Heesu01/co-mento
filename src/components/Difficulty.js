@@ -65,9 +65,9 @@ const Difficulty = () => {
 const Container = styled.div`
   width: 100%;
   height: auto;
-  background-color: #d5907d;
+  background-color: ${(props) => props.theme.colors.beige2};
   border-radius: 5px;
-  padding: 40px 20px;
+  padding: 40px 40px;
   padding-bottom: 0;
 `;
 const Top = styled.div`
@@ -86,7 +86,7 @@ const ItemBox = styled.div`
   justify-content: space-between;
 `;
 const Item = styled.div`
-  background-color: #2e2e2e;
+  background-color: ${(props) => props.theme.colors.black2};
   width: 31%;
   height: 400px;
   border-radius: 10px;

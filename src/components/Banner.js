@@ -14,7 +14,7 @@ const Banner = () => {
 };
 
 const Container = styled.div`
-  background-color: #f6e4db;
+  background-color: ${(props) => props.theme.colors.beige};
   height: 250px;
   padding: 50px 80px;
 `;

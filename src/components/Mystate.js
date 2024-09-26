@@ -35,9 +35,9 @@ const Mystate = () => {
 const Container = styled.div`
   width: 100%;
   height: auto;
-  background-color: ${(props) => props.theme.colors.pink};
+  background-color: ${(props) => props.theme.colors.deepPink};
   border-radius: 5px;
-  padding: 40px 20px;
+  padding: 40px 40px;
 `;
 const Top = styled.div`
   display: flex;
@@ -55,7 +55,7 @@ const ItemBox = styled.div`
   justify-content: space-between;
 `;
 const Item = styled.div`
-  background-color: #2e2e2e;
+  background-color: ${(props) => props.theme.colors.black2};
   width: 31%;
   height: 200px;
   border-radius: 10px;
@@ -89,7 +89,7 @@ const CircularProgress = styled.svg`
 `;
 const BackgroundCircle = styled.circle`
   fill: none;
-  stroke: #d3d3d3; /* 배경 색을 여기서 설정 */
+  stroke: ${(props) => props.theme.colors.gray3};
   stroke-width: 10;
 `;
 const Circle = styled.circle`
@@ -109,7 +109,7 @@ const Circle = styled.circle`
 `;
 const Percentage = styled.text`
   font-size: 20px;
-  fill: #ffffff;
+  fill: ${(props) => props.theme.colors.white};
   font-weight: bold;
   text-anchor: middle;
   dominant-baseline: central;

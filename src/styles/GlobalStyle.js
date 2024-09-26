@@ -11,6 +11,7 @@ const GlobalStyle = createGlobalStyle`
     border: 0;
     text-decoration: none;
     box-sizing: border-box;
+    font-family: "Pretendard";
     &:visited {
       text-decoration: none;
       color: black;
