@@ -2,8 +2,11 @@ import React from "react";
 import styled from "styled-components";
 import { FaRegHeart } from "react-icons/fa";
 import Button from "../components/Button";
+import { useNavigate } from "react-router-dom";
 
 const Problem = () => {
+  const navigate = useNavigate();
+
   return (
     <Container>
       <TopBox>
@@ -84,6 +87,7 @@ const Problem = () => {
           children="문제풀기"
           bgc={({ theme }) => theme.colors.deepPink}
           hoverColor={({ theme }) => theme.colors.pink}
+          onClick={() => navigate("/submit")}
         />
       </BottomBox>
     </Container>
