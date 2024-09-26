@@ -23,9 +23,15 @@ export const Theme = {
   colors: {
     white: "#fff",
     black: "#000",
+    black2: "#333332",
     gray: "#9A9A9A",
-    gray2: "#E9E9E9",
+    gray2: "#c4c4c4",
+    gray3: "#E9E9E9",
     red: "#FF4444",
+    pink: "#FF8F8F",
+    deepPink: "#eab8b5",
+    beige: "#f6e4db",
+    beige2: "#efd3c4;",
   },
   breakpoints: {
     mobile: "480px",

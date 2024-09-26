@@ -13,7 +13,7 @@ const Footer = () => {
 
 const Container = styled.div`
   height: 200px;
-  background-color: #000;
+  background-color: ${(props) => props.theme.colors.black2};
   padding: 50px 150px;
   color: ${(props) => props.theme.colors.white};
 `;
