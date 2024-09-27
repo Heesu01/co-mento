@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { FaCheck } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import Pagination from "../components/Pagination";
 
 const ProblemList = () => {
   const navigate = useNavigate();
@@ -90,6 +91,8 @@ const ProblemList = () => {
   const [algorithmChoseBox, setAlgorithmChoseBox] = useState(false);
   const [inputAlgorithm, setInputAlgorithm] = useState("");
   const [algorithm, setAlgorithm] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = 3;
 
   const AlgorithmInputClick = () => {
     setAlgorithmChoseBox(!algorithmChoseBox);
@@ -128,6 +131,10 @@ const ProblemList = () => {
 
   const handleSuccessStatusChange = (value) => {
     setSuccessStatus(value);
+  };
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
   };
 
   return (
@@ -242,6 +249,11 @@ const ProblemList = () => {
           </Item>
         ))}
       </ListBox>
+      <Pagination
+        totalPages={totalPages}
+        currentPage={currentPage}
+        onPageChange={handlePageChange}
+      />
     </Container>
   );
 };
