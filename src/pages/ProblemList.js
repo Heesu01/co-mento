@@ -6,13 +6,88 @@ import { useNavigate } from "react-router-dom";
 const ProblemList = () => {
   const navigate = useNavigate();
 
+  const problems = [
+    {
+      id: 1,
+      num: 1004,
+      title: "두 수 비교하기",
+      class: "수학",
+      successRate: "89.7%",
+      success: true,
+    },
+    {
+      id: 2,
+      num: 1005,
+      title: "합 구하기",
+      class: "수학",
+      successRate: "72.4%",
+      success: false,
+    },
+    {
+      id: 2,
+      num: 1005,
+      title: "합 구하기",
+      class: "수학",
+      successRate: "72.4%",
+      success: false,
+    },
+    {
+      id: 2,
+      num: 1005,
+      title: "합 구하기",
+      class: "수학",
+      successRate: "72.4%",
+      success: true,
+    },
+    {
+      id: 2,
+      num: 1005,
+      title: "합 구하기",
+      class: "수학",
+      successRate: "72.4%",
+      success: false,
+    },
+    {
+      id: 2,
+      num: 1005,
+      title: "합 구하기",
+      class: "수학",
+      successRate: "72.4%",
+      success: false,
+    },
+    {
+      id: 2,
+      num: 1005,
+      title: "합 구하기",
+      class: "수학",
+      successRate: "72.4%",
+      success: false,
+    },
+    {
+      id: 1,
+      num: 1004,
+      title: "두 수 비교하기",
+      class: "수학",
+      successRate: "89.7%",
+      success: true,
+    },
+    {
+      id: 1,
+      num: 1004,
+      title: "두 수 비교하기",
+      class: "수학",
+      successRate: "89.7%",
+      success: true,
+    },
+  ];
+
   return (
     <Container>
       <SearchBox>
         <Input placeholder="문제를 검색해주세요."></Input>
         <SearchBtn>검색</SearchBtn>
       </SearchBox>
-      <SpecificBox>알고리즘 분류</SpecificBox>
+      <SpecificBox></SpecificBox>
       <ListBox>
         <Top>
           <Num>문제번호</Num>
@@ -21,28 +96,22 @@ const ProblemList = () => {
           <Success>정답률</Success>
           <Check>성공여부</Check>
         </Top>
-        <Item onClick={() => navigate("/problem")}>
-          <Num>1004</Num>
-          <Title>두 수 비교하기</Title>
-          <Class>수학</Class>
-          <Success>89.7%</Success>
-          <Check>
-            <FaCheck color="green" />
-          </Check>
-        </Item>
-        <Item onClick={() => navigate("/problem")}>
-          <Num>1004</Num>
-          <Title>두 수 비교하기</Title>
-          <Class>수학</Class>
-          <Success>89.7%</Success>
-          <Check>
-            <p>X</p>
-          </Check>
-        </Item>
+        {problems.map((problem) => (
+          <Item key={problem.id} onClick={() => navigate("/problem")}>
+            <Num>{problem.num}</Num>
+            <Title>{problem.title}</Title>
+            <Class>{problem.class}</Class>
+            <Success>{problem.successRate}</Success>
+            <Check>
+              {problem.success ? <FaCheck color="green" /> : <p>X</p>}
+            </Check>
+          </Item>
+        ))}
       </ListBox>
     </Container>
   );
 };
+
 const Container = styled.div`
   width: 80%;
   margin: 90px auto;
