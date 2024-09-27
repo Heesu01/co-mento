@@ -32,6 +32,8 @@ export const Theme = {
     deepPink: "#eab8b5",
     beige: "#f6e4db",
     beige2: "#efd3c4;",
+    blue: "#0076c0",
+    yellow: "#f0ad4e",
   },
   breakpoints: {
     mobile: "480px",
