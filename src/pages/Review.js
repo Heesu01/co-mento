@@ -113,8 +113,8 @@ const Review = () => {
       <BottomBox>
         <Button
           children="문제로"
-          bgc={({ theme }) => theme.colors.deepPink}
-          hoverColor={({ theme }) => theme.colors.deepPink}
+          bgc={({ theme }) => theme.colors.beige2}
+          hoverColor={({ theme }) => theme.colors.beige2}
           onClick={() => navigate("/problem")}
         />
         <Button
@@ -141,7 +141,9 @@ const BoxContainer = styled.div`
   gap: 20px;
   padding-top: 20px;
 `;
-const ProblemBox = styled.div``;
+const ProblemBox = styled.div`
+  line-height: 1.3em;
+`;
 const TextTitle = styled.p`
   ${({ theme }) => theme.fonts.logo};
   margin-bottom: 15px;
@@ -164,6 +166,7 @@ const AllExampleBox = styled.div`
 `;
 const ExampleBox = styled.div`
   width: 48%;
+  line-height: 1.3em;
 `;
 const SmallContents = styled.div`
   width: 100%;
@@ -212,6 +215,7 @@ const ReviewBox = styled.div`
   min-height: 700px;
   display: flex;
   position: relative;
+  line-height: 1.3em;
 `;
 const SubmitBox = styled.div`
   width: 48.5%;
@@ -231,7 +235,8 @@ const AI = styled.div`
 const BottomBox = styled.div`
   display: flex;
   justify-content: end;
-  gap: 20px;
+  gap: 10px;
+  margin-top: 10px;
 `;
 
 export default Review;
