@@ -10,6 +10,7 @@ import Rank from "./pages/Rank";
 import Review from "./pages/Review";
 import Submit from "./pages/Submit";
 import Layout from "./components/Layout";
+import ScrollToTop from "./components/ScrollToTop";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
         <Route path="/review" element={<Review />} />
         <Route path="/submit" element={<Submit />} />
       </Routes>
+      <ScrollToTop />
     </Layout>
   );
 }
