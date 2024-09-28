@@ -14,7 +14,8 @@ export const Theme = {
     `,
     title: css`
       font-family: "Pretendard", sans-serif;
-      font-size: 30px;
+      font-size: 35px;
+      font-weight: 600;
     `,
     other: css`
       font-family: "", sans-serif;
