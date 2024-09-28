@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { FaMedal } from "react-icons/fa6";
+import Pagination from "../components/Pagination";
 
 const Rank = () => {
   const RankData = [
@@ -69,6 +70,13 @@ const Rank = () => {
     },
   ];
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = 3;
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
   return (
     <Container>
       <Title>Co-Mento 랭킹</Title>
@@ -123,6 +131,11 @@ const Rank = () => {
           </Item>
         ))}
       </ListBox>
+      <Pagination
+        totalPages={totalPages}
+        currentPage={currentPage}
+        onPageChange={handlePageChange}
+      />
     </Container>
   );
 };
