@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Button from "../components/Button";
@@ -6,6 +6,11 @@ import AiIcon from "../assets/ai.svg";
 
 const Review = () => {
   const navigate = useNavigate();
+  const [showAIReview, setShowAIReview] = useState(false);
+
+  const handleBackgroundClick = () => {
+    setShowAIReview((prev) => !prev);
+  };
 
   return (
     <Container>
@@ -74,27 +79,35 @@ const Review = () => {
             거리 지점을 찾아내어 출력
           </p>
         </SubmitBox>
-        <AI>
-          <p>
-            이 코드는 최백준이 열차에서 뛰어내릴 가장 적합한 위치를 찾기 위한
-            알고리즘을 구현한 것입니다. 그러나 몇 가지 개선할 점이 있습니다.
-            아래에 그 이유와 함께 설명하겠습니다. 1. 최적화 함수의 간결성 현재
-            optimization 함수는 dx와 dy의 최대공약수를 찾기 위해 반복문을
-            사용하고 있습니다. 이는 효율적이지 않고, 코드가 복잡해 보입니다.
-            대신, Java의 BigInteger 클래스를 사용하여 최대공약수를 간단하게 구할
-            수 있습니다. java 2. 거리 계산의 효율성 거리 계산을 위해 매번 제곱을
-            계산하고 있습니다. 이는 불필요한 연산입니다. Math.hypot 메서드를
-            사용하여 두 점 간의 거리를 더 직관적으로 계산할 수 있습니다. 3. 무한
-            루프 방지 현재 findJumpingPoint 함수는 무한 루프에 빠질 위험이
-            있습니다. 열차가 정류장을 지나칠 경우 이론적으로 계속해서 좌표를
-            증가시키기 때문에 이를 방지하기 위해 특정 범위 내에서만 반복하도록
-            조정할 수 있습니다. 예를 들어, 열차가 정류장에 도달했거나 지나쳤을
-            때 루프를 종료하도록 조건을 추가합니다. 4. 주석 개선 및 코드 가독성
-            주석이 코드의 흐름을 설명하는 데 도움이 되지만, 더 간결하고 명확하게
-            작성하는 것이 좋습니다. 예를 들어, 변수 이름을 좀 더 직관적으로
-            만들어 코드를 읽기 쉽게 할 수 있습니다. 수정된 코드 예시 아래는 위
-            개선점을 반영한 코드 예시입니다
-          </p>
+
+        <AI onClick={handleBackgroundClick}>
+          {!showAIReview && (
+            <AIReviewText>리뷰를 보려면 이곳을 누르세요.</AIReviewText>
+          )}
+
+          {showAIReview && (
+            <p>
+              이 코드는 최백준이 열차에서 뛰어내릴 가장 적합한 위치를 찾기 위한
+              알고리즘을 구현한 것입니다. 그러나 몇 가지 개선할 점이 있습니다.
+              아래에 그 이유와 함께 설명하겠습니다. 1. 최적화 함수의 간결성 현재
+              optimization 함수는 dx와 dy의 최대공약수를 찾기 위해 반복문을
+              사용하고 있습니다. 이는 효율적이지 않고, 코드가 복잡해 보입니다.
+              대신, Java의 BigInteger 클래스를 사용하여 최대공약수를 간단하게
+              구할 수 있습니다. java 2. 거리 계산의 효율성 거리 계산을 위해 매번
+              제곱을 계산하고 있습니다. 이는 불필요한 연산입니다. Math.hypot
+              메서드를 사용하여 두 점 간의 거리를 더 직관적으로 계산할 수
+              있습니다. 3. 무한 루프 방지 현재 findJumpingPoint 함수는 무한
+              루프에 빠질 위험이 있습니다. 열차가 정류장을 지나칠 경우
+              이론적으로 계속해서 좌표를 증가시키기 때문에 이를 방지하기 위해
+              특정 범위 내에서만 반복하도록 조정할 수 있습니다. 예를 들어,
+              열차가 정류장에 도달했거나 지나쳤을 때 루프를 종료하도록 조건을
+              추가합니다. 4. 주석 개선 및 코드 가독성 주석이 코드의 흐름을
+              설명하는 데 도움이 되지만, 더 간결하고 명확하게 작성하는 것이
+              좋습니다. 예를 들어, 변수 이름을 좀 더 직관적으로 만들어 코드를
+              읽기 쉽게 할 수 있습니다. 수정된 코드 예시 아래는 위 개선점을
+              반영한 코드 예시입니다
+            </p>
+          )}
         </AI>
       </ReviewBox>
       <BottomBox>
@@ -178,6 +191,18 @@ const Icon = styled.img`
   height: 100%;
   margin-right: 5px;
 `;
+const AIReviewText = styled.p`
+  width: 100%;
+  margin: 0;
+  font-size: 20px;
+  color: ${({ theme }) => theme.colors.gray};
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  cursor: pointer;
+`;
 const ReviewBox = styled.div`
   width: 100%;
   background-color: ${(props) => props.theme.colors.beige2};
@@ -186,6 +211,7 @@ const ReviewBox = styled.div`
   padding: 6px;
   min-height: 700px;
   display: flex;
+  position: relative;
 `;
 const SubmitBox = styled.div`
   width: 48.5%;
@@ -197,8 +223,10 @@ const SubmitBox = styled.div`
 `;
 const AI = styled.div`
   width: 47%;
-  padding: 10px;
+  padding: 20px 10px;
   margin: 0 auto;
+  position: relative;
+  cursor: pointer;
 `;
 const BottomBox = styled.div`
   display: flex;
