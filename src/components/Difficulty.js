@@ -100,6 +100,11 @@ const Item = styled.div`
   height: 400px;
   border-radius: 10px;
   padding: 20px;
+  transition: transform 0.3s, box-shadow 0.3s;
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  }
 `;
 const Title = styled.div`
   color: ${(props) => props.theme.colors.white};
@@ -118,6 +123,9 @@ const List = styled.div`
 `;
 const Problem = styled.div`
   cursor: pointer;
+  &:hover {
+    color: #ffd700;
+  }
 `;
 
 export default Difficulty;
