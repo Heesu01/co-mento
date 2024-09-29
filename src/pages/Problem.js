@@ -10,7 +10,7 @@ const Problem = () => {
   return (
     <Container>
       <TopBox>
-        <Num>1234</Num>
+        <Num>#1234</Num>
         <Name>
           <span>문제이름</span>
         </Name>
@@ -173,6 +173,7 @@ const TextContents = styled.div`
   padding: 20px;
   margin: 20px 0;
   min-height: 150px;
+  line-height: 1.3em;
 `;
 const AllExampleBox = styled.div`
   display: flex;
@@ -191,6 +192,7 @@ const SmallContents = styled.div`
   padding: 20px;
   min-height: 150px;
   margin-top: 20px;
+  line-height: 1.3em;
 `;
 const BottomBox = styled.div`
   display: flex;
