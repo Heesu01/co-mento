@@ -1,7 +1,49 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const Difficulty = () => {
+  const navigate = useNavigate();
+
+  const difficulties = [
+    {
+      level: "기초",
+      problems: [
+        "0000 두수비교하기",
+        "0001 A+B",
+        "0002 큰수비교",
+        "0003 구간합",
+        "0004 소수판별",
+        "0004 소수판별",
+        "0004 소수판별",
+      ],
+    },
+    {
+      level: "초급",
+      problems: [
+        "0000 두수비교하기",
+        "0001 A+B",
+        "0002 큰수비교",
+        "0003 구간합",
+        "0004 소수판별",
+        "0004 소수판별",
+        "0004 소수판별",
+      ],
+    },
+    {
+      level: "중급",
+      problems: [
+        "0000 두수비교하기",
+        "0001 A+B",
+        "0002 큰수비교",
+        "0003 구간합",
+        "0004 소수판별",
+        "0004 소수판별",
+        "0004 소수판별",
+      ],
+    },
+  ];
+
   return (
     <Container>
       <Top>
@@ -9,54 +51,21 @@ const Difficulty = () => {
         <p>더보기</p>
       </Top>
       <ItemBox>
-        <Item>
-          <Title>
-            <p>기초</p>
-            <p>더보기</p>
-          </Title>
-          <List>
-            <Problem>0000 두수비교하기</Problem>
-            <Problem>0000 두수비교하기</Problem>
-            <Problem>0000 두수비교하기</Problem>
-            <Problem>0000 두수비교하기</Problem>
-            <Problem>0000 두수비교하기</Problem>
-            <Problem>0000 두수비교하기</Problem>
-            <Problem>0000 두수비교하기</Problem>
-            <Problem>0000 두수비교하기</Problem>
-          </List>
-        </Item>
-        <Item>
-          <Title>
-            <p>초급</p>
-            <p>더보기</p>
-          </Title>
-          <List>
-            <Problem>0000 두수비교하기</Problem>
-            <Problem>0000 두수비교하기</Problem>
-            <Problem>0000 두수비교하기</Problem>
-            <Problem>0000 두수비교하기</Problem>
-            <Problem>0000 두수비교하기</Problem>
-            <Problem>0000 두수비교하기</Problem>
-            <Problem>0000 두수비교하기</Problem>
-            <Problem>0000 두수비교하기</Problem>
-          </List>
-        </Item>
-        <Item>
-          <Title>
-            <p>중급</p>
-            <p>더보기</p>
-          </Title>
-          <List>
-            <Problem>0000 두수비교하기</Problem>
-            <Problem>0000 두수비교하기</Problem>
-            <Problem>0000 두수비교하기</Problem>
-            <Problem>0000 두수비교하기</Problem>
-            <Problem>0000 두수비교하기</Problem>
-            <Problem>0000 두수비교하기</Problem>
-            <Problem>0000 두수비교하기</Problem>
-            <Problem>0000 두수비교하기</Problem>
-          </List>
-        </Item>
+        {difficulties.map((difficulty, index) => (
+          <Item key={index}>
+            <Title>
+              <p>{difficulty.level}</p>
+              <p>더보기</p>
+            </Title>
+            <List>
+              {difficulty.problems.map((problem, i) => (
+                <Problem key={i} onClick={() => navigate("/problem")}>
+                  {problem}
+                </Problem>
+              ))}
+            </List>
+          </Item>
+        ))}
       </ItemBox>
     </Container>
   );
