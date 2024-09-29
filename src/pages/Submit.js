@@ -59,7 +59,7 @@ const Submit = () => {
       </CautionBox>
       <InputBox>
         <TopBox>
-          <p>## 1393 음하철도 구팔팔</p>
+          <p># 1393 음하철도 구팔팔</p>
           <Select
             onChange={onChangeSelect}
             options={options}
@@ -162,10 +162,11 @@ const InputCodeBox = styled.div`
 
 const InputCode = styled.textarea`
   width: 100%;
-  height: 100%;
+  min-height: 450px;
   outline: none;
   resize: none;
   font-size: 15px;
+  line-height: 1.5em;
 `;
 
 const BtnBox = styled.div`
