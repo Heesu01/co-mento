@@ -91,6 +91,11 @@ const Item = styled.div`
   height: 100%;
   height: 400px;
   border-radius: 10px;
+  transition: transform 0.3s, box-shadow 0.3s;
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  }
 `;
 const List = styled.div`
   display: flex;
@@ -101,6 +106,9 @@ const List = styled.div`
 `;
 const Problem = styled.div`
   cursor: pointer;
+  &:hover {
+    color: #ffd700;
+  }
 `;
 const Cover = styled.div`
   width: 100%;
