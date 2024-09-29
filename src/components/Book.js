@@ -1,93 +1,62 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const Book = () => {
+  const navigate = useNavigate();
+
+  const problems = [
+    "0000 두수비교하기",
+    "0001 A+B",
+    "0002 큰수비교",
+    "0003 구간합",
+    "0004 소수판별",
+  ];
+
+  const books = [
+    { title: "정렬 탐색 완전정복", tags: "#수학 #정렬 #탐색 #트리" },
+    { title: "그래프 마스터", tags: "#그래프 #DFS #BFS #최단경로" },
+    { title: "동적 계획법", tags: "#DP #최적화 #재귀" },
+  ];
+
   return (
     <Container>
       <Top>
         <p>문제집</p>
       </Top>
       <ItemBox>
-        <Item>
-          <List>
-            <Problem>0000 두수비교하기</Problem>
-            <Problem>0000 두수비교하기</Problem>
-            <Problem>0000 두수비교하기</Problem>
-            <Problem>0000 두수비교하기</Problem>
-            <Problem>0000 두수비교하기</Problem>
-          </List>
-          <Cover>
-            <Title>정렬 탐색 완전정복</Title>
-            <Tag>#수학 #정렬 #탐색 #트리</Tag>
-          </Cover>
-        </Item>
-        <Item>
-          <List>
-            <Problem>0000 두수비교하기</Problem>
-            <Problem>0000 두수비교하기</Problem>
-            <Problem>0000 두수비교하기</Problem>
-            <Problem>0000 두수비교하기</Problem>
-            <Problem>0000 두수비교하기</Problem>
-          </List>
-          <Cover>
-            <Title>정렬 탐색 완전정복</Title>
-            <Tag>#수학 #정렬 #탐색 #트리</Tag>
-          </Cover>
-        </Item>
-        <Item>
-          <List>
-            <Problem>0000 두수비교하기</Problem>
-            <Problem>0000 두수비교하기</Problem>
-            <Problem>0000 두수비교하기</Problem>
-            <Problem>0000 두수비교하기</Problem>
-            <Problem>0000 두수비교하기</Problem>
-          </List>
-          <Cover>
-            <Title>정렬 탐색 완전정복</Title>
-            <Tag>#수학 #정렬 #탐색 #트리</Tag>
-          </Cover>
-        </Item>
+        {books.map((book, index) => (
+          <Item key={index}>
+            <List>
+              {problems.map((problem, i) => (
+                <Problem key={i} onClick={() => navigate("/problem")}>
+                  {problem}
+                </Problem>
+              ))}
+            </List>
+            <Cover>
+              <Title>{book.title}</Title>
+              <Tag>{book.tags}</Tag>
+            </Cover>
+          </Item>
+        ))}
       </ItemBox>
       <ItemBox>
-        <Item>
-          <List>
-            <Problem>0000 두수비교하기</Problem>
-            <Problem>0000 두수비교하기</Problem>
-            <Problem>0000 두수비교하기</Problem>
-            <Problem>0000 두수비교하기</Problem>
-            <Problem>0000 두수비교하기</Problem>
-          </List>
-          <Cover>
-            <Title>정렬 탐색 완전정복</Title>
-            <Tag>#수학 #정렬 #탐색 #트리</Tag>
-          </Cover>
-        </Item>
-        <Item>
-          <List>
-            <Problem>0000 두수비교하기</Problem>
-            <Problem>0000 두수비교하기</Problem>
-            <Problem>0000 두수비교하기</Problem>
-            <Problem>0000 두수비교하기</Problem>
-            <Problem>0000 두수비교하기</Problem>
-          </List>
-          <Cover>
-            <Title>정렬 탐색 완전정복</Title>
-            <Tag>#수학 #정렬 #탐색 #트리</Tag>
-          </Cover>
-        </Item>
-        <Item>
-          <List>
-            <Problem>0000 두수비교하기</Problem>
-            <Problem>0000 두수비교하기</Problem>
-            <Problem>0000 두수비교하기</Problem>
-            <Problem>0000 두수비교하기</Problem>
-            <Problem>0000 두수비교하기</Problem>
-          </List>
-          <Cover>
-            <Title>정렬 탐색 완전정복</Title>
-            <Tag>#수학 #정렬 #탐색 #트리</Tag>
-          </Cover>
-        </Item>
+        {books.map((book, index) => (
+          <Item key={index}>
+            <List>
+              {problems.map((problem, i) => (
+                <Problem key={i} onClick={() => navigate("/problem")}>
+                  {problem}
+                </Problem>
+              ))}
+            </List>
+            <Cover>
+              <Title>{book.title}</Title>
+              <Tag>{book.tags}</Tag>
+            </Cover>
+          </Item>
+        ))}
       </ItemBox>
     </Container>
   );
