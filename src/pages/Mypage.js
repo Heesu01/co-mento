@@ -1,34 +1,30 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
 
 const Mypage = () => {
   const [activeTab, setActiveTab] = useState("myActivity");
-  const navigate = useNavigate();
 
-  
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
 
   return (
-    <div className="contents">
-      <User_info>
+    <Container>
+      <UserInfo>
         <Level>LV. -----</Level>
-        <User_name>유저이름</User_name>
-      </User_info>
+        <UserName>유저이름</UserName>
+      </UserInfo>
 
-      <Main_contents>
-        <My_account>
+      <MainContents>
+        <MyAccount>
           <ButtonContainer>
-            
             <Button
               active={activeTab === "myActivity"}
               onClick={() => handleTabClick("myActivity")}
             >
               나의활동
             </Button>
-            
+
             <Button
               active={activeTab === "accountManagement"}
               onClick={() => handleTabClick("accountManagement")}
@@ -36,13 +32,12 @@ const Mypage = () => {
               계정관리
             </Button>
           </ButtonContainer>
-        </My_account>
+        </MyAccount>
 
-        
         {activeTab === "myActivity" && (
-          <My_works>
+          <MyWorks>
             <ProblemBox>
-              <TextTitle>즐겨찾기 문제</TextTitle>
+              <TextTitle>즐겨찾는 문제</TextTitle>
               <TextContents>
                 <Text>000 음하철도 구구팔</Text>
               </TextContents>
@@ -59,11 +54,11 @@ const Mypage = () => {
                 <Text>000 Hello World!</Text>
               </TextContents>
             </ProblemBox>
-          </My_works>
+          </MyWorks>
         )}
 
         {activeTab === "accountManagement" && (
-          <My_works>
+          <MyWorks>
             <ProblemBox>
               <TextTitle>계정 정보</TextTitle>
               <TextContents>
@@ -71,19 +66,26 @@ const Mypage = () => {
                 <Text>이메일: example@example.com</Text>
               </TextContents>
             </ProblemBox>
-          </My_works>
+          </MyWorks>
         )}
-      </Main_contents>
-    </div>
+      </MainContents>
+    </Container>
   );
 };
 
-const Main_contents = styled.div`
+const Container = styled.div`
+  width: 80%;
+  margin: 50px auto;
   display: flex;
-  width: 900px;
+  flex-direction: column;
+  gap: 20px;
+`;
+
+const MainContents = styled.div`
+  display: flex;
+  width: 100%;
   height: auto;
-  margin-top: 45px;
-  margin-left: 300px;
+  line-height: 1.3em;
 `;
 
 const ButtonContainer = styled.div`
@@ -98,42 +100,42 @@ const Button = styled.button`
   padding: 10px 20px;
   font-size: 20px;
   width: 120px;
-  background-color: #fff;
-  font-weight: ${(props) => (props.active ? "bold" : "normal")}; 
-  border: none; 
-  outline: none; 
+  background-color: ${({ theme }) => theme.colors.white};
+  font-weight: ${(props) => (props.active ? "bold" : "normal")};
+  border: none;
+  outline: none;
 `;
 
-const My_account = styled.div`
-  width: 300px;
+const MyAccount = styled.div`
+  width: 20%;
   height: 50px;
   text-align: center;
   flex-direction: column;
 `;
 
-const My_works = styled.div`
-  width: 800px;
+const MyWorks = styled.div`
+  width: 80%;
   height: auto;
   padding-left: 40px;
-  border-left: 1px solid ${({ theme }) => theme.colors.red};
+  border-left: 1px solid ${({ theme }) => theme.colors.gray};
+  padding-top: 20px;
 `;
 
-const User_info = styled.div`
+const UserInfo = styled.div`
   display: flex;
   align-items: center;
-  margin-left: 300px;
-  margin-top: 40px;
-  width: 900px;
   padding-bottom: 15px;
   border-bottom: 1.5px solid ${({ theme }) => theme.colors.red};
 `;
 
 const Level = styled.div`
   border-bottom: 1px solid ccccc;
-  width: 150px;
-  height: 45px;
-  line-height: 45px;
-  background-color: #fba6aa;
+  padding: 10px 30px;
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  text-align: center;
+  background-color: ${({ theme }) => theme.colors.pink};
   font-weight: bold;
   text-align: center;
   font-size: 28px;
@@ -142,7 +144,7 @@ const Level = styled.div`
   margin-left: 40px;
 `;
 
-const User_name = styled.div`
+const UserName = styled.div`
   font-size: 28px;
   margin-left: 20px;
 `;
