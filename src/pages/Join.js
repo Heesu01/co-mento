@@ -13,20 +13,19 @@ const Join = () => {
     trigger,
   } = useForm();
 
-  const onSubmit = (data) => {
+  const onSubmit = () => {
     if (!errors.confirmPassword) {
       navigate("/");
     }
   };
 
-  const error = undefined;
-
   const password = watch("password");
 
-  
-  return(
+  return (
     <Container>
-      <Logo>Co-Mento <span style={{ color: 'black' }}>회원가입</span> </Logo>
+      <Logo>
+        Co-Mento <span style={{ color: "black" }}>회원가입</span>{" "}
+      </Logo>
       <JoinBox onSubmit={handleSubmit(onSubmit)}>
         <Title>아이디</Title>
         <Input
@@ -94,7 +93,7 @@ const Join = () => {
           onBlur={() => trigger("password")}
         />
         {errors.password && <Error>{errors.password.message}</Error>}
-        
+
         <Title>비밀번호 확인</Title>
         <Input
           type="password"
@@ -106,12 +105,16 @@ const Join = () => {
           })}
           onBlur={() => trigger("confirmPassword")}
         />
-        {errors.confirmPassword && <Error>{errors.confirmPassword.message}</Error>}
-        
-        <Btn type="submit">가입하기</Btn>
+        {errors.confirmPassword && (
+          <Error>{errors.confirmPassword.message}</Error>
+        )}
+
+        <Btn type="submit" onClick={() => navigate("/")}>
+          가입하기
+        </Btn>
       </JoinBox>
     </Container>
-  )
+  );
 };
 
 const Container = styled.div`
@@ -159,25 +162,11 @@ const Input = styled.input`
     border: none;
   }
 `;
-const P = styled.p`
-  margin-top: 10px;
-  font-size: 13px;
-  display: flex;
-  justify-content: flex-end;
-  color: ${(props) => props.theme.colors.gray};
-  margin-right: 10px;
-
-  span {
-    color: ${(props) => props.theme.colors.pink};
-    margin-left: 5px;
-    cursor: pointer;
-  }
-`;
 const Btn = styled.button`
   height: 38px;
   border-radius: 10px;
   background-color: ${(props) => props.theme.colors.pink};
-  margin: 10px 0;
+  margin: 20px 0;
   color: ${(props) => props.theme.colors.white};
 
   &:hover {
