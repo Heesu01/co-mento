@@ -66,13 +66,14 @@ const ProblemBook = () => {
       ...base,
       outline: "none",
       boxShadow: "none",
-      borderColor: "#dcdcdc",
+      borderColor: "#ddd",
+      borderRadius: "8px",
       cursor: "pointer",
-      "&:hover": { borderColor: "#b0b0b0" },
+      "&:hover": { borderColor: "#aaa" },
     }),
     placeholder: (base) => ({
       ...base,
-      color: "gray",
+      color: "#888",
       cursor: "pointer",
     }),
     option: (base, { isFocused }) => ({
@@ -80,7 +81,7 @@ const ProblemBook = () => {
       backgroundColor: isFocused ? "#f0f0f0" : "white",
       color: "black",
       cursor: "pointer",
-      padding: "10px",
+      padding: "12px 15px",
     }),
   };
 
@@ -91,14 +92,14 @@ const ProblemBook = () => {
   return (
     <Container>
       <Header>
-        <h2>문제집</h2>
-        <p>다양한 난이도의 코딩 문제를 풀어보세요!</p>
+        <h2>코딩 문제집</h2>
+        <p>다양한 알고리즘 문제를 풀고 실력을 키워보세요!</p>
       </Header>
       <SelectContainer>
         <Select
           onChange={onChangeSelect}
           options={problemSets}
-          placeholder="문제집 선택"
+          placeholder="문제집을 선택하세요"
           styles={customStyles}
         />
       </SelectContainer>
@@ -117,28 +118,28 @@ const ProblemBook = () => {
 };
 
 const Container = styled.div`
-  width: 80%;
-  margin: 90px auto;
+  width: 75%;
+  margin: 100px auto;
+  padding: 40px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  background-color: #fafafa;
-  border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  padding: 40px 20px;
+  gap: 25px;
+  background-color: #fdfdfd;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
 `;
 
 const Header = styled.div`
   text-align: center;
   h2 {
-    font-size: 32px;
-    font-weight: 700;
-    margin-bottom: 10px;
-    color: #333;
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 20px;
   }
   p {
     font-size: 18px;
-    color: gray;
+    color: ${(props) => props.theme.colors.gray};
+    margin-top: -8px;
   }
 `;
 
@@ -147,33 +148,33 @@ const SelectContainer = styled.div`
 `;
 
 const ProblemsList = styled.div`
-  padding: 20px;
-  background-color: #fff;
-  border-radius: 10px;
-  border: 1px solid #e0e0e0;
-  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+  padding: 25px;
+  background-color: ${(props) => props.theme.colors.white};
+  border-radius: 12px;
+  border: 1px solid ${(props) => props.theme.colors.gray3};
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   h3 {
-    margin: 0 0 15px;
-    font-size: 24px;
-    color: #333;
+    margin-bottom: 20px;
+    font-size: 26px;
+    font-weight: 600;
     text-align: center;
   }
 `;
 
 const ProblemItem = styled.div`
-  padding: 10px;
-  border-radius: 8px;
-  margin: 5px 0;
-  background-color: #f9f9f9;
-  border: 1px solid #e0e0e0;
-  transition: background-color 0.3s, transform 0.3s;
+  padding: 12px 15px;
+  border-radius: 10px;
+  margin: 8px 0;
+  background-color: #fafafa;
+  border: 1px solid ${(props) => props.theme.colors.gray3};
+  transition: all 0.3s ease;
   cursor: pointer;
 
   &:hover {
-    background-color: ${(props) => props.theme.colors.red};
-    transform: translateY(-2px);
-    border-color: #b2ebf2;
+    background-color: ${(props) => props.theme.colors.black2};
     color: ${(props) => props.theme.colors.white};
+    transform: translateY(-3px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
   }
 `;
 
