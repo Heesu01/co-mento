@@ -14,6 +14,7 @@ const Review = () => {
 
   return (
     <Container>
+      <Message>맞았습니다! AI리뷰를 확인하세요.</Message>
       <BoxContainer>
         <ProblemBox>
           <TextTitle>#1004 두 수 비교하기</TextTitle>
@@ -130,10 +131,20 @@ const Review = () => {
 
 const Container = styled.div`
   width: 80%;
-  margin: 90px auto;
+  margin: 40px auto;
   display: flex;
   flex-direction: column;
   gap: 20px;
+`;
+const Message = styled.div`
+  background-color: ${({ theme }) => theme.colors.beige2};
+  color: black;
+  font-size: 22px;
+  font-weight: 500;
+  text-align: center;
+  padding: 15px 20px;
+  border-radius: 15px;
+  box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.1);
 `;
 const BoxContainer = styled.div`
   display: flex;
@@ -210,7 +221,7 @@ const ReviewBox = styled.div`
   width: 100%;
   background-color: ${(props) => props.theme.colors.beige2};
   box-shadow: 0px 5px 5px -1px ${(props) => props.theme.colors.gray};
-  border-radius: 10px;
+  border-radius: 15px;
   padding: 6px;
   min-height: 700px;
   display: flex;

@@ -65,24 +65,24 @@ const Mycode = () => {
                 <Info>{problem.memory}</Info>
                 <Info>{problem.time}</Info>
                 <Info>{problem.submitter}</Info>
-                <Info>{problem.success ? <FaCheck color="green" /> : <p>X</p>}</Info>
+                <Info>
+                  {problem.success ? <FaCheck color="green" /> : <p>X</p>}
+                </Info>
               </InfoBox>
             </Statistic>
           ))}
         </StatisticsBox>
       </SolveInfo>
-      <Main_code>
+      <MainCode>
         <SourceInfoTitle>소스 코드</SourceInfoTitle>
-          <TextContents>
-              <Text>
-                <pre>
-                  <code>
-                    {yourCode}
-                  </code>
-                </pre>
-              </Text>
-          </TextContents>
-      </Main_code>
+        <TextContents>
+          <p>
+            <pre>
+              <code>{yourCode}</code>
+            </pre>
+          </p>
+        </TextContents>
+      </MainCode>
     </Container>
   );
 };
@@ -146,22 +146,14 @@ const Info = styled.p`
   text-align: center;
 `;
 
-const Main_code = styled.div`
+const MainCode = styled.div`
   width: 90%;
   margin-left: 60px;
   align-items: center;
   height: auto;
   border-radius: 15px;
-  background-color: #ccc;
+  background-color: ${(props) => props.theme.colors.beige};
   box-shadow: 0px 5px 5px -1px ${(props) => props.theme.colors.gray};
-`;
-
-const SourceCode = styled.div`
-  background-color: #eee;
-  margin-left: 25px;
-  width: 95%;
-  min-height: 400px;
-  border-radius: 15px;
 `;
 
 const SourceInfoTitle = styled.h2`
@@ -173,14 +165,12 @@ const SourceInfoTitle = styled.h2`
 `;
 
 const TextContents = styled.div`
-  border-radius: 10px;
+  border-radius: 15px;
   width: 99%;
   padding: 10px 20px 30px 20px;
   margin: 5px 5px;
-  background-color: #fff;
+  background-color: ${({ theme }) => theme.colors.white};
   min-height: 400px;
 `;
-
-const Text = styled.p``;
 
 export default Mycode;

@@ -10,7 +10,7 @@ const Problem = () => {
   return (
     <Container>
       <TopBox>
-        <Num>1234</Num>
+        <Num>#1234</Num>
         <Name>
           <span>문제이름</span>
         </Name>
@@ -42,42 +42,42 @@ const Problem = () => {
         <ProblemBox>
           <TextTitle>문제</TextTitle>
           <TextContents>
-            <Text>
+            <p>
               두 정수 A와 B를 입력받은 다음, A+B를 출력하는 프로그램을
               작성하시오.
-            </Text>
+            </p>
           </TextContents>
         </ProblemBox>
-        <InOutBox>
+        <ProblemBox>
           <TextTitle>입력</TextTitle>
           <TextContents>
-            <Text>
+            <p>
               두 정수 A와 B를 입력받은 다음, A+B를 출력하는 프로그램을
               작성하시오.
-            </Text>
+            </p>
           </TextContents>
-        </InOutBox>
-        <InOutBox>
+        </ProblemBox>
+        <ProblemBox>
           <TextTitle>출력</TextTitle>
           <TextContents>
-            <Text>
+            <p>
               두 정수 A와 B를 입력받은 다음, A+B를 출력하는 프로그램을
               작성하시오.
-            </Text>
+            </p>
           </TextContents>
-        </InOutBox>
+        </ProblemBox>
       </BoxContainer>
       <AllExampleBox>
         <ExampleBox>
           <TextTitle>입력 예시</TextTitle>
           <SmallContents>
-            <Text>1 3</Text>
+            <p>1 3</p>
           </SmallContents>
         </ExampleBox>
         <ExampleBox>
           <TextTitle>출력 예시</TextTitle>
           <SmallContents>
-            <Text>1 3</Text>
+            <p>1 3</p>
           </SmallContents>
         </ExampleBox>
       </AllExampleBox>
@@ -173,9 +173,8 @@ const TextContents = styled.div`
   padding: 20px;
   margin: 20px 0;
   min-height: 150px;
+  line-height: 1.3em;
 `;
-const Text = styled.p``;
-const InOutBox = styled.div``;
 const AllExampleBox = styled.div`
   display: flex;
   width: 100%;
@@ -193,6 +192,7 @@ const SmallContents = styled.div`
   padding: 20px;
   min-height: 150px;
   margin-top: 20px;
+  line-height: 1.3em;
 `;
 const BottomBox = styled.div`
   display: flex;

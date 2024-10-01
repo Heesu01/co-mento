@@ -8,6 +8,10 @@ const Fail = () => {
 
   return (
     <Container>
+      <FailureMessage>
+        <p>틀렸습니다! 다시 제출해 주세요.</p>
+      </FailureMessage>
+
       <BoxContainer>
         <ProblemBox>
           <TextTitle>#1004 두 수 비교하기</TextTitle>
@@ -45,15 +49,12 @@ const Fail = () => {
             </SmallContents>
           </ExampleBox>
         </AllExampleBox>
-        <FailureMessage>
-          <p>틀렸습니다! 다시 제출해 주세요.</p>
-        </FailureMessage>
       </BoxContainer>
 
       <BottomBox>
         <Button
           children="문제로 돌아가기"
-          bgc={({ theme }) => theme.colors.deepPink}
+          bgc={({ theme }) => theme.colors.pink}
           hoverColor={({ theme }) => theme.colors.pink}
           onClick={() => navigate("/problem")}
         />
@@ -64,16 +65,25 @@ const Fail = () => {
 
 const Container = styled.div`
   width: 80%;
-  margin: 30px auto;
+  margin: 40px auto;
   display: flex;
   flex-direction: column;
   gap: 20px;
 `;
-
+const FailureMessage = styled.div`
+  background-color: ${({ theme }) => theme.colors.red};
+  color: ${({ theme }) => theme.colors.white};
+  font-size: 22px;
+  font-weight: 500;
+  text-align: center;
+  padding: 15px 20px;
+  border-radius: 15px;
+  box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.1);
+`;
 const BoxContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 10px;
   padding-top: 20px;
 `;
 
@@ -95,6 +105,7 @@ const TextContents = styled.div`
   margin: 20px 0;
   min-height: 150px;
 `;
+
 const AllExampleBox = styled.div`
   display: flex;
   width: 100%;
@@ -102,10 +113,12 @@ const AllExampleBox = styled.div`
   justify-content: space-between;
   margin: 20px 0;
 `;
+
 const ExampleBox = styled.div`
   width: 48%;
   line-height: 1.3em;
 `;
+
 const SmallContents = styled.div`
   width: 100%;
   box-shadow: 0px 5px 5px -1px ${(props) => props.theme.colors.gray};
@@ -113,13 +126,6 @@ const SmallContents = styled.div`
   padding: 20px;
   min-height: 150px;
   margin-top: 20px;
-`;
-
-const FailureMessage = styled.div`
-  text-align: center;
-  font-size: 20px;
-  font-weight: bold;
-  color: ${({ theme }) => theme.colors.red};
 `;
 
 const BottomBox = styled.div`

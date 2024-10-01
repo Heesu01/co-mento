@@ -465,6 +465,11 @@ const Item = styled.div`
   padding: 10px 0;
   border-bottom: 1px solid ${({ theme }) => theme.colors.red};
   cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s;
+
+  &:hover {
+    background-color: ${(props) => props.theme.colors.deepPink};
+  }
 `;
 
 export default ProblemList;
