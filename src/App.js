@@ -12,6 +12,7 @@ import Submit from "./pages/Submit";
 import Layout from "./components/Layout";
 import ScrollToTop from "./components/ScrollToTop";
 import Fail from "./pages/Fail";
+import ProblemBook from "./pages/ProblemBook";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
         <Route path="/review" element={<Review />} />
         <Route path="/fail" element={<Fail />} />
         <Route path="/submit" element={<Submit />} />
+        <Route path="/book" element={<ProblemBook />} />
       </Routes>
       <ScrollToTop />
     </Layout>
