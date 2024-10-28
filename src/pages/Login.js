@@ -2,6 +2,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { login } from "../api/AuthApi";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -12,8 +13,19 @@ const Login = () => {
     trigger,
   } = useForm();
 
-  const onSubmit = () => {
-    navigate("/");
+  const onSubmit = async (data) => {
+    try {
+      const response = await login(data);
+      console.log(response.data);
+      navigate("/");
+    } catch (error) {
+      console.error("로그인 오류:", error);
+      const errorMessage =
+        error.response?.data?.detail ||
+        error.response?.data?.message ||
+        "로그인 중 오류가 발생했습니다. 다시 시도해 주세요.";
+      alert(errorMessage);
+    }
   };
 
   return (

@@ -7,3 +7,10 @@ export const signUp = async (data) => {
     name: data.name,
   });
 };
+
+export const login = async (data) => {
+  return await Axios.post("/auth/login", {
+    userId: data.id,
+    password: data.password,
+  });
+};
