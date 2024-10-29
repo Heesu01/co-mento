@@ -1,9 +1,29 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { logout as logoutApi } from "../api/AuthApi";
+import { useAuth } from "../context/AuthContext";
 
 const Header = () => {
   const navigate = useNavigate();
+  const { isLoggedIn, setIsLoggedIn } = useAuth();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setIsLoggedIn(!!token);
+  }, [setIsLoggedIn]);
+
+  const handleLogout = async () => {
+    try {
+      await logoutApi();
+      localStorage.removeItem("token");
+      setIsLoggedIn(false);
+      navigate("/");
+    } catch (error) {
+      console.error("로그아웃 오류:", error);
+      alert("로그아웃에 실패했습니다. 다시 시도해 주세요.");
+    }
+  };
 
   return (
     <Container>
@@ -17,8 +37,14 @@ const Header = () => {
         </Menu>
       </Left>
       <BtnBox>
-        <Login onClick={() => navigate("/auth/login")}>로그인</Login>
-        <Join onClick={() => navigate("/auth/join")}>회원가입</Join>
+        {isLoggedIn ? (
+          <Logout onClick={handleLogout}>로그아웃</Logout>
+        ) : (
+          <>
+            <Login onClick={() => navigate("/auth/login")}>로그인</Login>
+            <Join onClick={() => navigate("/auth/join")}>회원가입</Join>
+          </>
+        )}
       </BtnBox>
     </Container>
   );
@@ -67,6 +93,9 @@ const Login = styled.div`
   cursor: pointer;
 `;
 const Join = styled.div`
+  cursor: pointer;
+`;
+const Logout = styled.div`
   cursor: pointer;
 `;
 

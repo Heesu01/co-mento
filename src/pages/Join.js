@@ -2,6 +2,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { signUp } from "../api/AuthApi";
 
 const Join = () => {
   const navigate = useNavigate();
@@ -13,9 +14,19 @@ const Join = () => {
     trigger,
   } = useForm();
 
-  const onSubmit = () => {
-    if (!errors.confirmPassword) {
-      navigate("/");
+  const onSubmit = async (data) => {
+    try {
+      const response = await signUp(data);
+
+      console.log(response.data);
+
+      navigate("/auth/login");
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.detail ||
+        "회원가입 중 오류가 발생했습니다. 다시 시도해 주세요.";
+      console.error("회원가입 오류:", error);
+      alert(errorMessage);
     }
   };
 
@@ -109,9 +120,7 @@ const Join = () => {
           <Error>{errors.confirmPassword.message}</Error>
         )}
 
-        <Btn type="submit" onClick={() => navigate("/")}>
-          가입하기
-        </Btn>
+        <Btn type="submit">가입하기</Btn>
       </JoinBox>
     </Container>
   );

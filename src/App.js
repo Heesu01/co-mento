@@ -13,27 +13,30 @@ import Layout from "./components/Layout";
 import ScrollToTop from "./components/ScrollToTop";
 import Fail from "./pages/Fail";
 import ProblemBook from "./pages/ProblemBook";
+import { AuthProvider } from "./context/AuthContext";
 
 function App() {
   return (
-    <Layout>
-      <Routes>
-        <Route path="/" element={<Navigate to="/main" />} />
-        <Route path="/main" element={<Main />} />
-        <Route path="/auth/login" element={<Login />} />
-        <Route path="/auth/join" element={<Join />} />
-        <Route path="/mycode" element={<Mycode />} />
-        <Route path="/mypage" element={<Mypage />} />
-        <Route path="/problem" element={<Problem />} />
-        <Route path="/problemlist" element={<ProblemList />} />
-        <Route path="/rank" element={<Rank />} />
-        <Route path="/review" element={<Review />} />
-        <Route path="/fail" element={<Fail />} />
-        <Route path="/submit" element={<Submit />} />
-        <Route path="/book" element={<ProblemBook />} />
-      </Routes>
-      <ScrollToTop />
-    </Layout>
+    <AuthProvider>
+      <Layout>
+        <Routes>
+          <Route path="/" element={<Navigate to="/main" />} />
+          <Route path="/main" element={<Main />} />
+          <Route path="/auth/login" element={<Login />} />
+          <Route path="/auth/join" element={<Join />} />
+          <Route path="/mycode" element={<Mycode />} />
+          <Route path="/mypage" element={<Mypage />} />
+          <Route path="/problem" element={<Problem />} />
+          <Route path="/problemlist" element={<ProblemList />} />
+          <Route path="/rank" element={<Rank />} />
+          <Route path="/review" element={<Review />} />
+          <Route path="/fail" element={<Fail />} />
+          <Route path="/submit" element={<Submit />} />
+          <Route path="/book" element={<ProblemBook />} />
+        </Routes>
+        <ScrollToTop />
+      </Layout>
+    </AuthProvider>
   );
 }
 

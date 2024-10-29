@@ -2,12 +2,15 @@ import React from "react";
 import styled from "styled-components";
 import Header from "./Header";
 import Footer from "./Footer";
+import { useAuth } from "../context/AuthContext";
 
 const Layout = ({ children }) => {
+  const { isLoggedIn, setIsLoggedIn } = useAuth();
+
   return (
     <LayoutContainer>
       <HeaderWrapper>
-        <Header />
+        <Header isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
       </HeaderWrapper>
       <Main>{children}</Main>
       <FooterBox>
