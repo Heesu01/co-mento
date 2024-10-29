@@ -2,9 +2,11 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { logout as logoutApi } from "../api/AuthApi";
+import { useAuth } from "../context/AuthContext";
 
-const Header = ({ isLoggedIn, setIsLoggedIn }) => {
+const Header = () => {
   const navigate = useNavigate();
+  const { isLoggedIn, setIsLoggedIn } = useAuth();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
