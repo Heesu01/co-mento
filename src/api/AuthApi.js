@@ -14,3 +14,7 @@ export const login = async (data) => {
     password: data.password,
   });
 };
+
+export const logout = async () => {
+  return await Axios.post("/auth/logout");
+};

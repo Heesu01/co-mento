@@ -1,11 +1,12 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { login } from "../api/AuthApi";
 
 const Login = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const {
     register,
     handleSubmit,
@@ -17,6 +18,10 @@ const Login = () => {
     try {
       const response = await login(data);
       console.log(response.data);
+      localStorage.setItem("token", response.data.token);
+      if (location.state && location.state.setIsLoggedIn) {
+        location.state.setIsLoggedIn();
+      }
       navigate("/");
     } catch (error) {
       console.error("로그인 오류:", error);
