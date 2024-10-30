@@ -25,6 +25,15 @@ const Header = () => {
     }
   };
 
+  const handleMyPage = () => {
+    const userProfileId = localStorage.getItem("userProfileId");
+    if (userProfileId) {
+      navigate(`/mypage/${userProfileId}`);
+    } else {
+      alert("사용자 정보가 없습니다.");
+    }
+  };
+
   return (
     <Container>
       <Left>
@@ -39,7 +48,7 @@ const Header = () => {
       <BtnBox>
         {isLoggedIn ? (
           <>
-            <MyPage onClick={() => navigate("/mypage")}>마이페이지</MyPage>
+            <MyPage onClick={handleMyPage}>마이페이지</MyPage>
             <Logout onClick={handleLogout}>로그아웃</Logout>
           </>
         ) : (
