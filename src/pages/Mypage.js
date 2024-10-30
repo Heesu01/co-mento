@@ -1,8 +1,29 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import { fetchUserProfile } from "../api/UserApi";
+import { useParams } from "react-router-dom";
 
 const Mypage = () => {
+  const { userProfileId } = useParams();
   const [activeTab, setActiveTab] = useState("myActivity");
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (!userProfileId) {
+          alert("사용자 정보가 없습니다.");
+          return;
+        }
+        const response = await fetchUserProfile(userProfileId);
+        setUserData(response.data);
+      } catch (error) {
+        console.error("유저 데이터를 불러오지 못했습니다:", error);
+      }
+    };
+
+    fetchData();
+  }, [userProfileId]);
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
@@ -11,8 +32,8 @@ const Mypage = () => {
   return (
     <Container>
       <UserInfo>
-        <Level>LV. -----</Level>
-        <UserName>유저이름</UserName>
+        <Level>경험치: {userData ? userData.experience : "-----"}</Level>
+        <UserName>{userData ? userData.name : "유저이름"}</UserName>
       </UserInfo>
 
       <MainContents>
@@ -39,19 +60,39 @@ const Mypage = () => {
             <ProblemBox>
               <TextTitle>즐겨찾는 문제</TextTitle>
               <TextContents>
-                <Text>000 음하철도 구구팔</Text>
+                {userData?.likedProblemIds?.length ? (
+                  userData.likedProblemIds.map((id, index) => (
+                    <Text key={index}>문제 ID: {id}</Text>
+                  ))
+                ) : (
+                  <Text>즐겨찾는 문제가 없습니다.</Text>
+                )}
               </TextContents>
             </ProblemBox>
+
             <ProblemBox>
               <TextTitle>맞은 문제</TextTitle>
               <TextContents>
-                <Text>000 두 수 비교하기</Text>
+                {userData?.solvedProblemIds?.length ? (
+                  userData.solvedProblemIds.map((id, index) => (
+                    <Text key={index}>문제 ID: {id}</Text>
+                  ))
+                ) : (
+                  <Text>맞은 문제가 없습니다.</Text>
+                )}
               </TextContents>
             </ProblemBox>
+
             <ProblemBox>
               <TextTitle>틀린 문제</TextTitle>
               <TextContents>
-                <Text>000 Hello World!</Text>
+                {userData?.failedProblemIds?.length ? (
+                  userData.failedProblemIds.map((id, index) => (
+                    <Text key={index}>문제 ID: {id}</Text>
+                  ))
+                ) : (
+                  <Text>틀린 문제가 없습니다.</Text>
+                )}
               </TextContents>
             </ProblemBox>
           </MyWorks>
@@ -62,8 +103,9 @@ const Mypage = () => {
             <ProblemBox>
               <TextTitle>계정 정보</TextTitle>
               <TextContents>
-                <Text>유저이름: 유저이름</Text>
+                <Text>유저이름: {userData?.name || "유저이름"}</Text>
                 <Text>이메일: example@example.com</Text>
+                {/* 이메일 정보는 받아오는 데이터에 추가 필요 */}
               </TextContents>
             </ProblemBox>
           </MyWorks>
