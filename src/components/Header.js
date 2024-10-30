@@ -38,7 +38,10 @@ const Header = () => {
       </Left>
       <BtnBox>
         {isLoggedIn ? (
-          <Logout onClick={handleLogout}>로그아웃</Logout>
+          <>
+            <MyPage onClick={() => navigate("/mypage")}>마이페이지</MyPage>
+            <Logout onClick={handleLogout}>로그아웃</Logout>
+          </>
         ) : (
           <>
             <Login onClick={() => navigate("/auth/login")}>로그인</Login>
@@ -96,6 +99,9 @@ const Join = styled.div`
   cursor: pointer;
 `;
 const Logout = styled.div`
+  cursor: pointer;
+`;
+const MyPage = styled.div`
   cursor: pointer;
 `;
 
