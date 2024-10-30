@@ -1,77 +1,35 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { FaMedal } from "react-icons/fa6";
 import Pagination from "../components/Pagination";
+import { Axios } from "../api/Api";
 
 const Rank = () => {
-  const RankData = [
-    {
-      id: 1,
-      rank: 4,
-      name: "닉네임3422",
-      success: "20",
-      exp: "8096",
-    },
-    {
-      id: 2,
-      rank: 5,
-      name: "닉네임6562",
-      success: "18",
-      exp: "7023",
-    },
-    {
-      id: 3,
-      rank: 6,
-      name: "닉네임1234",
-      success: "15",
-      exp: "6739",
-    },
-    {
-      id: 3,
-      rank: 7,
-      name: "닉네임1234",
-      success: "15",
-      exp: "6739",
-    },
-    {
-      id: 3,
-      rank: 8,
-      name: "닉네임1234",
-      success: "15",
-      exp: "6739",
-    },
-    {
-      id: 3,
-      rank: 8,
-      name: "닉네임1234",
-      success: "15",
-      exp: "6739",
-    },
-    {
-      id: 3,
-      rank: 8,
-      name: "닉네임1234",
-      success: "15",
-      exp: "6739",
-    },
-    {
-      id: 3,
-      rank: 8,
-      name: "닉네임1234",
-      success: "15",
-      exp: "6739",
-    },
-    {
-      id: 3,
-      rank: 8,
-      name: "닉네임1234",
-      success: "15",
-      exp: "6739",
-    },
-  ];
-
+  const [rankData, setRankData] = useState([]);
+  const [topThree, setTopThree] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = 3;
+  const [totalPages, setTotalPages] = useState(1);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await Axios.get("/users/ranking", {
+          params: { page: currentPage - 1 },
+        });
+
+        const data = response.data.data;
+        const userProfileRequests = data.userProfileRequests || [];
+
+        setRankData(userProfileRequests.slice(3));
+        setTopThree(userProfileRequests.slice(0, 3));
+        setTotalPages(data?.paginationResponse?.totalPage || 1);
+      } catch (error) {
+        console.error("랭킹조회 오류:", error);
+      }
+    };
+
+    fetchData();
+  }, [currentPage]);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -81,39 +39,23 @@ const Rank = () => {
     <Container>
       <Title>Co-Mento 랭킹</Title>
       <TopRank>
-        <RankBox>
-          <Text>
-            <MedalIcon color="#C0C0C0" />
-            <TopNum>2</TopNum>
-            <Info>
-              <p>닉네임3231</p>
-              <p>경험치 2923</p>
-            </Info>
-          </Text>
-          <Bar rank={2} h="160px"></Bar>
-        </RankBox>
-        <RankBox>
-          <Text>
-            <MedalIcon color="#FFD700" />
-            <TopNum>1</TopNum>
-            <Info>
-              <p>닉네임1234</p>
-              <p>경험치 5920</p>
-            </Info>
-          </Text>
-          <Bar rank={1} h="300px"></Bar>
-        </RankBox>
-        <RankBox>
-          <Text>
-            <MedalIcon color="#CD7F32" />
-            <TopNum>3</TopNum>
-            <Info>
-              <p>닉네임879</p>
-              <p>경험치 1220</p>
-            </Info>
-          </Text>
-          <Bar rank={3} h="120px"></Bar>
-        </RankBox>
+        {topThree.map((user, index) => (
+          <RankBox key={index}>
+            <Text>
+              <MedalIcon
+                color={
+                  index === 0 ? "#FFD700" : index === 1 ? "#C0C0C0" : "#CD7F32"
+                }
+              />
+              <TopNum>{index + 1}</TopNum>
+              <Info>
+                <p>{user.name}</p>
+                <p>경험치 {user.experience}</p>
+              </Info>
+            </Text>
+            <Bar rank={index + 1} h={`${300 - index * 50}px`}></Bar>
+          </RankBox>
+        ))}
       </TopRank>
       <ListBox>
         <Top>
@@ -122,12 +64,12 @@ const Rank = () => {
           <Success>맞은 문제 수</Success>
           <Exp>경험치</Exp>
         </Top>
-        {RankData.map((problem) => (
-          <Item key={problem.id}>
-            <Num>{problem.rank}</Num>
-            <Name>{problem.name}</Name>
-            <Success>{problem.success}</Success>
-            <Exp>{problem.exp}</Exp>
+        {rankData.map((user, index) => (
+          <Item key={index}>
+            <Num>{index + 4}</Num>
+            <Name>{user.name}</Name>
+            <Success>{user.solvedCount}</Success>
+            <Exp>{user.experience}</Exp>
           </Item>
         ))}
       </ListBox>
