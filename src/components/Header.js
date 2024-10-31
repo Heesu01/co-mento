@@ -17,6 +17,7 @@ const Header = () => {
     try {
       await logoutApi();
       localStorage.removeItem("token");
+      localStorage.removeItem("userProfileId");
       setIsLoggedIn(false);
       navigate("/");
     } catch (error) {
