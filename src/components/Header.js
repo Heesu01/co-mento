@@ -17,11 +17,21 @@ const Header = () => {
     try {
       await logoutApi();
       localStorage.removeItem("token");
+      localStorage.removeItem("userProfileId");
       setIsLoggedIn(false);
       navigate("/");
     } catch (error) {
       console.error("로그아웃 오류:", error);
       alert("로그아웃에 실패했습니다. 다시 시도해 주세요.");
+    }
+  };
+
+  const handleMyPage = () => {
+    const userProfileId = localStorage.getItem("userProfileId");
+    if (userProfileId) {
+      navigate(`/mypage/${userProfileId}`);
+    } else {
+      alert("사용자 정보가 없습니다.");
     }
   };
 
@@ -38,7 +48,10 @@ const Header = () => {
       </Left>
       <BtnBox>
         {isLoggedIn ? (
-          <Logout onClick={handleLogout}>로그아웃</Logout>
+          <>
+            <MyPage onClick={handleMyPage}>마이페이지</MyPage>
+            <Logout onClick={handleLogout}>로그아웃</Logout>
+          </>
         ) : (
           <>
             <Login onClick={() => navigate("/auth/login")}>로그인</Login>
@@ -96,6 +109,9 @@ const Join = styled.div`
   cursor: pointer;
 `;
 const Logout = styled.div`
+  cursor: pointer;
+`;
+const MyPage = styled.div`
   cursor: pointer;
 `;
 

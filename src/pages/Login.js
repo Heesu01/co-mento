@@ -20,6 +20,10 @@ const Login = () => {
       const response = await login(data);
       console.log(response.data);
       localStorage.setItem("token", response.data.token);
+
+      const userProfileId = response.data.data.userProfileId;
+      localStorage.setItem("userProfileId", userProfileId);
+
       setIsLoggedIn(true);
       navigate("/");
     } catch (error) {

@@ -25,7 +25,7 @@ function App() {
           <Route path="/auth/login" element={<Login />} />
           <Route path="/auth/join" element={<Join />} />
           <Route path="/mycode" element={<Mycode />} />
-          <Route path="/mypage" element={<Mypage />} />
+          <Route path="/mypage/:userProfileId" element={<Mypage />} />
           <Route path="/problem" element={<Problem />} />
           <Route path="/problemlist" element={<ProblemList />} />
           <Route path="/rank" element={<Rank />} />
