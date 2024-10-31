@@ -32,7 +32,7 @@ const Mypage = () => {
   return (
     <Container>
       <UserInfo>
-        <Level>경험치: {userData ? userData.experience : "-----"}</Level>
+        <Level>경험치: {userData ? userData.experience : "0"}</Level>
         <UserName>{userData ? userData.name : "유저이름"}</UserName>
       </UserInfo>
 
@@ -55,61 +55,63 @@ const Mypage = () => {
           </ButtonContainer>
         </MyAccount>
 
-        {activeTab === "myActivity" && (
-          <MyWorks>
-            <ProblemBox>
-              <TextTitle>즐겨찾는 문제</TextTitle>
-              <TextContents>
-                {userData?.likedProblemIds?.length ? (
-                  userData.likedProblemIds.map((id, index) => (
-                    <Text key={index}>문제 ID: {id}</Text>
-                  ))
-                ) : (
-                  <Text>즐겨찾는 문제가 없습니다.</Text>
-                )}
-              </TextContents>
-            </ProblemBox>
+        <ContentArea>
+          {activeTab === "myActivity" && (
+            <MyWorks>
+              <ProblemBox>
+                <TextTitle>즐겨찾는 문제</TextTitle>
+                <TextContents>
+                  {userData?.likedProblemIds?.length ? (
+                    userData.likedProblemIds.map((id, index) => (
+                      <Text key={index}>문제 ID: {id}</Text>
+                    ))
+                  ) : (
+                    <Text>즐겨찾는 문제가 없습니다.</Text>
+                  )}
+                </TextContents>
+              </ProblemBox>
 
-            <ProblemBox>
-              <TextTitle>맞은 문제</TextTitle>
-              <TextContents>
-                {userData?.solvedProblemIds?.length ? (
-                  userData.solvedProblemIds.map((id, index) => (
-                    <Text key={index}>문제 ID: {id}</Text>
-                  ))
-                ) : (
-                  <Text>맞은 문제가 없습니다.</Text>
-                )}
-              </TextContents>
-            </ProblemBox>
+              <ProblemBox>
+                <TextTitle>맞은 문제</TextTitle>
+                <TextContents>
+                  {userData?.solvedProblemIds?.length ? (
+                    userData.solvedProblemIds.map((id, index) => (
+                      <Text key={index}>문제 ID: {id}</Text>
+                    ))
+                  ) : (
+                    <Text>맞은 문제가 없습니다.</Text>
+                  )}
+                </TextContents>
+              </ProblemBox>
 
-            <ProblemBox>
-              <TextTitle>틀린 문제</TextTitle>
-              <TextContents>
-                {userData?.failedProblemIds?.length ? (
-                  userData.failedProblemIds.map((id, index) => (
-                    <Text key={index}>문제 ID: {id}</Text>
-                  ))
-                ) : (
-                  <Text>틀린 문제가 없습니다.</Text>
-                )}
-              </TextContents>
-            </ProblemBox>
-          </MyWorks>
-        )}
+              <ProblemBox>
+                <TextTitle>틀린 문제</TextTitle>
+                <TextContents>
+                  {userData?.failedProblemIds?.length ? (
+                    userData.failedProblemIds.map((id, index) => (
+                      <Text key={index}>문제 ID: {id}</Text>
+                    ))
+                  ) : (
+                    <Text>틀린 문제가 없습니다.</Text>
+                  )}
+                </TextContents>
+              </ProblemBox>
+            </MyWorks>
+          )}
 
-        {activeTab === "accountManagement" && (
-          <MyWorks>
-            <ProblemBox>
-              <TextTitle>계정 정보</TextTitle>
-              <TextContents>
-                <Text>유저이름: {userData?.name || "유저이름"}</Text>
-                <Text>이메일: example@example.com</Text>
-                {/* 이메일 정보는 받아오는 데이터에 추가 필요 */}
-              </TextContents>
-            </ProblemBox>
-          </MyWorks>
-        )}
+          {activeTab === "accountManagement" && (
+            <MyWorks>
+              <ProblemBox>
+                <TextTitle>계정 정보</TextTitle>
+                <TextContents>
+                  <Text>유저이름: {userData?.name || "유저이름"}</Text>
+                  <Text>이메일: example@example.com</Text>
+                  {/* 이메일 정보는 받아오는 데이터에 추가 필요 */}
+                </TextContents>
+              </ProblemBox>
+            </MyWorks>
+          )}
+        </ContentArea>
       </MainContents>
     </Container>
   );
@@ -127,90 +129,100 @@ const MainContents = styled.div`
   display: flex;
   width: 100%;
   height: auto;
-  line-height: 1.3em;
+  line-height: 1.5em;
 `;
 
 const ButtonContainer = styled.div`
   display: flex;
   margin-top: 20px;
-  align-items: center;
   flex-direction: column;
-  gap: 10px;
+  gap: 20px;
 `;
 
 const Button = styled.button`
-  padding: 10px 20px;
-  font-size: 20px;
-  width: 120px;
-  background-color: ${({ theme }) => theme.colors.white};
-  font-weight: ${(props) => (props.active ? "bold" : "normal")};
-  border: none;
-  outline: none;
+  padding: 12px 24px;
+  font-size: 18px;
+  width: 12vw;
+  background-color: ${({ active }) => (active ? "#FF4444" : "#fff")};
+  color: ${({ active }) => (active ? "#fff" : "#333")};
+  border: 1px solid ${({ active }) => (active ? "#FF4444" : "#ccc")};
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+
+  &:hover {
+    background-color: #ff4444;
+    color: #fff;
+  }
 `;
 
 const MyAccount = styled.div`
-  width: 20%;
-  height: 50px;
-  text-align: center;
+  width: 25%;
+  padding: 20px;
+  display: flex;
   flex-direction: column;
+  align-items: center;
+  padding-left: 0;
+`;
+
+const ContentArea = styled.div`
+  width: 75%;
+  padding: 20px;
 `;
 
 const MyWorks = styled.div`
-  width: 80%;
-  height: auto;
-  padding-left: 40px;
-  border-left: 1px solid ${({ theme }) => theme.colors.gray};
-  padding-top: 20px;
+  width: 100%;
 `;
 
 const UserInfo = styled.div`
   display: flex;
   align-items: center;
-  padding-bottom: 15px;
-  border-bottom: 1.5px solid ${({ theme }) => theme.colors.red};
+  padding: 20px;
+  background-color: #f8f8f8;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin: 0 20px;
 `;
 
 const Level = styled.div`
-  border-bottom: 1px solid ccccc;
-  padding: 10px 30px;
-  display: flex;
-  align-content: center;
-  justify-content: center;
-  text-align: center;
-  background-color: ${({ theme }) => theme.colors.pink};
+  padding: 12px 20px;
+  background-color: ${(props) => props.theme.colors.red};
+  color: ${(props) => props.theme.colors.white};
+  border-radius: 20px;
   font-weight: bold;
-  text-align: center;
-  font-size: 28px;
-  border-radius: 8px;
-  color: white;
-  margin-left: 40px;
+  font-size: 20px;
+  margin-right: 20px;
 `;
 
 const UserName = styled.div`
-  font-size: 28px;
-  margin-left: 20px;
+  font-size: 24px;
+  font-weight: bold;
 `;
 
-const ProblemBox = styled.div``;
+const ProblemBox = styled.div`
+  margin-bottom: 20px;
+  width: 97%;
+`;
 
 const TextTitle = styled.p`
   margin-bottom: 10px;
-  font-size: 20px;
-  text-align: center;
-  width: 120px;
+  font-size: 22px;
+  padding-left: 5px;
   border-bottom: 2px solid ${({ theme }) => theme.colors.red};
   padding-bottom: 10px;
 `;
 
 const TextContents = styled.div`
-  box-shadow: 0px 5px 5px -1px ${(props) => props.theme.colors.gray};
-  border-radius: 10px;
-  padding: 20px;
-  margin: 10px 0;
-  margin-bottom: 30px;
+  background-color: #ffffff;
+  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: 15px;
   min-height: 150px;
 `;
 
-const Text = styled.p``;
+const Text = styled.p`
+  margin: 5px 0;
+  font-size: 16px;
+`;
 
 export default Mypage;
