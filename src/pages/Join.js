@@ -40,11 +40,11 @@ const Join = () => {
       <JoinBox onSubmit={handleSubmit(onSubmit)}>
         <Title>아이디</Title>
         <Input
-          placeholder="사용하실 이메일을 입력해주세요."
+          placeholder="사용하실 아이디을 입력해주세요."
           {...register("id", {
             required: "아이디를 입력해주세요.",
             minLength: {
-              value: 6,
+              value: 4,
               message: "아이디는 6자 이상이어야 합니다.",
             },
             maxLength: {
@@ -74,7 +74,7 @@ const Join = () => {
               message: "닉네임는 10자 이하이어야 합니다.",
             },
             pattern: {
-              value: /^[a-zA-Z0-9]+$/,
+              value: /^[a-zA-Z0-9가-힣]+$/,
               message: "닉네임는 영문과 숫자만 입력 가능합니다.",
             },
           })}

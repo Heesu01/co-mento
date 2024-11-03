@@ -14,6 +14,7 @@ import ScrollToTop from "./components/ScrollToTop";
 import Fail from "./pages/Fail";
 import ProblemBook from "./pages/ProblemBook";
 import { AuthProvider } from "./context/AuthContext";
+import MycodeList from "./pages/MycodeList";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
           <Route path="/fail" element={<Fail />} />
           <Route path="/submit" element={<Submit />} />
           <Route path="/book" element={<ProblemBook />} />
+          <Route path="/mycodelist" element={<MycodeList />} />
         </Routes>
         <ScrollToTop />
       </Layout>
