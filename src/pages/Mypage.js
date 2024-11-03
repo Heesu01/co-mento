@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { fetchUserProfile } from "../api/UserApi";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 const Mypage = () => {
   const { userProfileId } = useParams();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("myActivity");
   const [userData, setUserData] = useState(null);
 
@@ -27,6 +28,10 @@ const Mypage = () => {
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
+  };
+
+  const handleSubmittedListClick = () => {
+    navigate(`/mycodelist/${userProfileId}`);
   };
 
   return (
@@ -52,6 +57,8 @@ const Mypage = () => {
             >
               계정관리
             </Button>
+
+            <Button onClick={handleSubmittedListClick}>제출한 목록보기</Button>
           </ButtonContainer>
         </MyAccount>
 

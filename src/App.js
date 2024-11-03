@@ -25,7 +25,7 @@ function App() {
           <Route path="/main" element={<Main />} />
           <Route path="/auth/login" element={<Login />} />
           <Route path="/auth/join" element={<Join />} />
-          <Route path="/mycode" element={<Mycode />} />
+          <Route path="/mycode/:solutionId" element={<Mycode />} />
           <Route path="/mypage/:userProfileId" element={<Mypage />} />
           <Route path="/problem" element={<Problem />} />
           <Route path="/problemlist" element={<ProblemList />} />
@@ -34,7 +34,7 @@ function App() {
           <Route path="/fail" element={<Fail />} />
           <Route path="/submit" element={<Submit />} />
           <Route path="/book" element={<ProblemBook />} />
-          <Route path="/mycodelist" element={<MycodeList />} />
+          <Route path="/mycodelist/:userProfileId" element={<MycodeList />} />
         </Routes>
         <ScrollToTop />
       </Layout>

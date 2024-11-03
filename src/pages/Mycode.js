@@ -1,88 +1,66 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { FaCheck } from "react-icons/fa";
+import { useParams } from "react-router-dom";
+import { fetchSolutionDetail } from "../api/UserApi";
 
 const Mycode = () => {
-  const problems = [
-    {
-      id: 2,
-      num: 1393,
-      title: "음하철도 구구팔",
-      language: "JAVA",
-      memory: "16012KB",
-      time: "116ms",
-      submitter: "테스터",
-      subtime: "1분 전",
-      success: true,
-    },
-  ];
+  const { solutionId } = useParams();
+  const [problem, setProblem] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const yourCode = `
-  import java.io.*;
-  import java.util.*;
+  useEffect(() => {
+    const fetchProblem = async () => {
+      try {
+        const data = await fetchSolutionDetail(solutionId);
+        setProblem(data);
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+      }
+    };
 
+    fetchProblem();
+  }, [solutionId]);
 
-  public class Main {
-      private static int endPointX, endPointY;
-      private static int startPointX, startPointY;
-      private static int moveX, moveY;
-
-
-      public static void main(String[] args) throws IOException {
-          BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
-          StringTokenizer stringTokenizer = new StringTokenizer(br.readLine());
-          endPointX = Integer.parseInt(stringTokenizer.nextToken());
-          endPointY = Integer.parseInt(stringTokenizer.nextToken());
-
-          stringTokenizer = new StringTokenizer(br.readLine());
-
-          startPointX = Integer.parseInt(stringTokenizer.nextToken());
-
-              return;
-          }
-          int i=2;
-  `;
+  if (loading) return <p>Loading...</p>;
+  if (!problem) return <p>Problem not found.</p>;
 
   return (
     <Container>
       <SolveInfo>
         <SolveInfoTitle>풀이 정보</SolveInfoTitle>
         <StatisticsBox>
-          {problems.map((problem, index) => (
-            <Statistic key={index}>
-              <TitleBox>
-                <Title>문제 번호</Title>
-                <Title>문제 제목</Title>
-                <Title>언어</Title>
-                <Title>메모리</Title>
-                <Title>시간</Title>
-                <Title>제출자</Title>
-                <Title>결과</Title>
-              </TitleBox>
-              <InfoBox>
-                <Info>{problem.num}</Info>
-                <Info>{problem.title}</Info>
-                <Info>{problem.language}</Info>
-                <Info>{problem.memory}</Info>
-                <Info>{problem.time}</Info>
-                <Info>{problem.submitter}</Info>
-                <Info>
-                  {problem.success ? <FaCheck color="green" /> : <p>X</p>}
-                </Info>
-              </InfoBox>
-            </Statistic>
-          ))}
+          <Statistic>
+            <TitleBox>
+              <Title>문제 번호</Title>
+              <Title>문제 제목</Title>
+              <Title>언어</Title>
+              {/* <Title>메모리</Title>
+                <Title>시간</Title> */}
+              <Title>제출자</Title>
+              <Title>결과</Title>
+            </TitleBox>
+            <InfoBox>
+              <Info>{problem.problemId}</Info>
+              <Info>{problem.problemTitle}</Info>
+              <Info>{problem.language}</Info>
+              {/* <Info>{problem.memory}</Info>
+                <Info>{problem.time}</Info> */}
+              <Info>{problem.userName}</Info>
+              <Info>
+                {problem.correct ? <FaCheck color="green" /> : <p>X</p>}
+              </Info>
+            </InfoBox>
+          </Statistic>
         </StatisticsBox>
       </SolveInfo>
       <MainCode>
         <SourceInfoTitle>소스 코드</SourceInfoTitle>
         <TextContents>
-          <p>
-            <pre>
-              <code>{yourCode}</code>
-            </pre>
-          </p>
+          <pre>
+            <code>{problem.code}</code>
+          </pre>
         </TextContents>
       </MainCode>
     </Container>

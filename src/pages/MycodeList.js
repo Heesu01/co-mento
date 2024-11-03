@@ -1,84 +1,36 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { FaCheck } from "react-icons/fa";
+import { fetchUserSolutions } from "../api/UserApi";
 
-const Mycode = () => {
+const MycodeList = () => {
+  const { userProfileId } = useParams();
   const navigate = useNavigate();
-  const problemsPerPage = 5; // 한 페이지에 표시할 문제 수
-  const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
+  const problemsPerPage = 5;
+  const [currentPage, setCurrentPage] = useState(1);
+  const [problems, setProblems] = useState([]);
 
-  const problems = [
-    {
-      id: 2,
-      num: 1393,
-      title: "음하철도 구구팔",
-      language: "JAVA",
-      memory: "16012KB",
-      time: "116ms",
-      submitter: "테스터",
-      subtime: "1분 전",
-      success: true,
-    },
-    {
-      id: 1,
-      num: 1394,
-      title: "a+b",
-      language: "C",
-      memory: "1612KB",
-      time: "500ms",
-      submitter: "테스터리",
-      subtime: "10분 전",
-      success: false,
-    },
-    {
-      num: 1393,
-      title: "음하철도 구구팔",
-      language: "JAVA",
-      memory: "16012KB",
-      time: "116ms",
-      submitter: "테스터",
-      subtime: "1분 전",
-      success: true,
-    },
-    {
-      num: 1393,
-      title: "음하철도 구구팔",
-      language: "JAVA",
-      memory: "16012KB",
-      time: "116ms",
-      submitter: "테스터",
-      subtime: "1분 전",
-      success: true,
-    },
-    {
-      num: 1393,
-      title: "음하철도 구구팔",
-      language: "JAVA",
-      memory: "16012KB",
-      time: "116ms",
-      submitter: "테스터",
-      subtime: "1분 전",
-      success: true,
-    },
-    {
-        num: 1393,
-        title: "음하철도 구구팔",
-        language: "JAVA",
-        memory: "16012KB",
-        time: "116ms",
-        submitter: "테스터",
-        subtime: "1분 전",
-        success: true,
-      },
-  ];
+  useEffect(() => {
+    const loadProblems = async () => {
+      try {
+        const solutionList = await fetchUserSolutions(userProfileId);
+        setProblems(solutionList);
+      } catch (error) {
+        console.error("제출문제 조회 에러:", error);
+      }
+    };
 
-  // 페이지별 문제 목록을 계산합니다.
+    loadProblems();
+  }, [userProfileId]);
+
   const indexOfLastProblem = currentPage * problemsPerPage;
   const indexOfFirstProblem = indexOfLastProblem - problemsPerPage;
-  const currentProblems = problems.slice(indexOfFirstProblem, indexOfLastProblem);
+  const currentProblems = problems.slice(
+    indexOfFirstProblem,
+    indexOfLastProblem
+  );
 
-  // 페이지 변경 함수
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
@@ -89,19 +41,22 @@ const Mycode = () => {
           <ClassNum>문제 번호</ClassNum>
           <ClassTit>문제 제목</ClassTit>
           <ClassLang>사용 언어</ClassLang>
-          <ClassMem>메모리</ClassMem>
-          <ClassTime>시간</ClassTime>
+          {/* <ClassMem>메모리</ClassMem>
+          <ClassTime>시간</ClassTime> */}
           <ClassStime>제출 시간</ClassStime>
           <ClassSub>제출자</ClassSub>
           <Check>결과</Check>
         </Top>
         {currentProblems.map((problem) => (
-          <Item key={problem.id} onClick={() => navigate("/mycode")}>
+          <Item
+            key={problem.solutionId}
+            onClick={() => navigate(`/mycode/${problem.solutionId}`)}
+          >
             <ClassNum>{problem.num}</ClassNum>
             <ClassTit>{problem.title}</ClassTit>
             <ClassLang>{problem.language}</ClassLang>
-            <ClassMem>{problem.memory}</ClassMem>
-            <ClassTime>{problem.time}</ClassTime>
+            {/* <ClassMem>{problem.memory}</ClassMem>
+            <ClassTime>{problem.time}</ClassTime> */}
             <ClassStime>{problem.subtime}</ClassStime>
             <ClassSub>{problem.submitter}</ClassSub>
             <Check>
@@ -111,22 +66,23 @@ const Mycode = () => {
         ))}
       </ListBox>
 
-      {/* 페이지네이션 버튼 */}
       <Pagination>
-        {Array.from({ length: Math.ceil(problems.length / problemsPerPage) }, (_, i) => (
-          <PageButton
-            key={i + 1}
-            onClick={() => paginate(i + 1)}
-            active={currentPage === i + 1}
-          >
-            {i + 1}
-          </PageButton>
-        ))}
+        {Array.from(
+          { length: Math.ceil(problems.length / problemsPerPage) },
+          (_, i) => (
+            <PageButton
+              key={i + 1}
+              onClick={() => paginate(i + 1)}
+              active={currentPage === i + 1}
+            >
+              {i + 1}
+            </PageButton>
+          )
+        )}
       </Pagination>
     </Container>
   );
 };
-
 
 const Container = styled.div`
   width: 80%;
@@ -179,19 +135,19 @@ const ClassNum = styled.div`
   width: 10%;
 `;
 const ClassTit = styled.div`
-  width: 20%;
+  width: 30%;
 `;
 const ClassLang = styled.div`
   width: 10%;
 `;
-const ClassMem = styled.div`
-  width: 10%;
-`;
-const ClassTime = styled.div`
-  width: 10%;
-`;
+// const ClassMem = styled.div`
+//   width: 10%;
+// `;
+// const ClassTime = styled.div`
+//   width: 10%;
+// `;
 const ClassStime = styled.div`
-  width: 10%;
+  width: 20%;
 `;
 const ClassSub = styled.div`
   width: 10%;
@@ -215,8 +171,10 @@ const PageButton = styled.button`
   padding: 8px 12px;
   font-size: 16px;
   font-weight: bold;
-  color: ${({ active, theme }) => (active ? theme.colors.white : theme.colors.black)};
-  background-color: ${({ active, theme }) => (active ? theme.colors.red : "transparent")};
+  color: ${({ active, theme }) =>
+    active ? theme.colors.white : theme.colors.black};
+  background-color: ${({ active, theme }) =>
+    active ? theme.colors.red : "transparent"};
   border-radius: 5px;
   cursor: pointer;
 
@@ -226,4 +184,4 @@ const PageButton = styled.button`
   }
 `;
 
-export default Mycode;
+export default MycodeList;
