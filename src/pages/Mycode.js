@@ -1,21 +1,8 @@
 import React from "react";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
 import { FaCheck } from "react-icons/fa";
 
 const Mycode = () => {
-  const navigate = useNavigate();
-  const problem = [
-    {
-      id: 1,
-      num: 1004,
-      title: "두 수 비교하기",
-      class: "수학",
-      successRate: "89.7%",
-      success: true,
-    },
-  ];
-
   const problems = [
     {
       id: 2,
@@ -57,52 +44,50 @@ const Mycode = () => {
           int i=2;
   `;
 
-
-  
-    return (
-      <Container>
-        <SolveInfo>
-          <SolveInfoTitle>풀이 정보</SolveInfoTitle>
-          <StatisticsBox>
-            {problems.map((problem, index) => (
-              <Statistic key={index}>
-                <TitleBox>
-                  <Title>문제 번호</Title>
-                  <Title>문제 제목</Title>
-                  <Title>언어</Title>
-                  <Title>메모리</Title>
-                  <Title>시간</Title>
-                  <Title>제출자</Title>
-                  <Title>결과</Title>
-                </TitleBox>
-                <InfoBox>
-                  <Info>{problem.num}</Info>
-                  <Info>{problem.title}</Info>
-                  <Info>{problem.language}</Info>
-                  <Info>{problem.memory}</Info>
-                  <Info>{problem.time}</Info>
-                  <Info>{problem.submitter}</Info>
-                  <Info>
-                    {problem.success ? <FaCheck color="green" /> : <p>X</p>}
-                  </Info>
-                </InfoBox>
-              </Statistic>
-            ))}
-          </StatisticsBox>
-        </SolveInfo>
-        <MainCode>
-          <SourceInfoTitle>소스 코드</SourceInfoTitle>
-          <TextContents>
-            <p>
-              <pre>
-                <code>{yourCode}</code>
-              </pre>
-            </p>
-          </TextContents>
-        </MainCode>
-      </Container>
-    );
-  };
+  return (
+    <Container>
+      <SolveInfo>
+        <SolveInfoTitle>풀이 정보</SolveInfoTitle>
+        <StatisticsBox>
+          {problems.map((problem, index) => (
+            <Statistic key={index}>
+              <TitleBox>
+                <Title>문제 번호</Title>
+                <Title>문제 제목</Title>
+                <Title>언어</Title>
+                <Title>메모리</Title>
+                <Title>시간</Title>
+                <Title>제출자</Title>
+                <Title>결과</Title>
+              </TitleBox>
+              <InfoBox>
+                <Info>{problem.num}</Info>
+                <Info>{problem.title}</Info>
+                <Info>{problem.language}</Info>
+                <Info>{problem.memory}</Info>
+                <Info>{problem.time}</Info>
+                <Info>{problem.submitter}</Info>
+                <Info>
+                  {problem.success ? <FaCheck color="green" /> : <p>X</p>}
+                </Info>
+              </InfoBox>
+            </Statistic>
+          ))}
+        </StatisticsBox>
+      </SolveInfo>
+      <MainCode>
+        <SourceInfoTitle>소스 코드</SourceInfoTitle>
+        <TextContents>
+          <p>
+            <pre>
+              <code>{yourCode}</code>
+            </pre>
+          </p>
+        </TextContents>
+      </MainCode>
+    </Container>
+  );
+};
 
 const Container = styled.div`
   width: 80%;
@@ -188,83 +173,6 @@ const TextContents = styled.div`
   margin: 5px 5px;
   background-color: ${({ theme }) => theme.colors.white};
   min-height: 400px;
-`;
-
-const ListBoxTitle = styled.div`
-  text-align: center;
-  font-weight: 600;
-  font-size: 20px;
-`;
-
-const ListBox = styled.div`
-  width: 100%;
-  height: auto;
-  padding: 35px;
-`;
-const Top = styled.div`
-  width: 100%;
-  display: flex;
-  text-align: center;
-  align-items: center;
-  justify-content: center;
-  padding-bottom: 10px;
-  border-bottom: 3px solid ${({ theme }) => theme.colors.red};
-`;
-const Num = styled.div`
-  width: 10%;
-`;
-
-const Class = styled.div`
-  width: 30%;
-`;
-const Success = styled.div`
-  width: 10%;
-`;
-const Check = styled.div`
-  width: 20%;
-  p {
-    font-weight: 800;
-    color: ${({ theme }) => theme.colors.red};
-  }
-`;
-
-const ClassNum = styled.div`
-  width: 30%;
-`;
-const ClassTit = styled.div`
-  width: 30%;
-`;
-const ClassLang = styled.div`
-  width: 30%;
-`;
-const ClassMem = styled.div`
-  width: 30%;
-`;
-const ClassTime = styled.div`
-  width: 30%;
-`;
-const ClassStime = styled.div`
-  width: 30%;
-`;
-const ClassSub = styled.div`
-  width: 30%;
-`;
-
-const Item = styled.div`
-  width: 100%;
-  height: 40px;
-  display: flex;
-  text-align: center;
-  align-items: center;
-  justify-content: center;
-  padding: 10px 0;
-  border-bottom: 1px solid ${({ theme }) => theme.colors.red};
-  cursor: pointer;
-  transition: background-color 0.3s, transform 0.3s;
-
-  &:hover {
-    background-color: ${(props) => props.theme.colors.deepPink};
-  }
 `;
 
 export default Mycode;
