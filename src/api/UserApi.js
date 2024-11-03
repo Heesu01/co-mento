@@ -18,3 +18,13 @@ export const fetchUserSolutions = async (userProfileId) => {
     success: solution.correct,
   }));
 };
+
+export const fetchSolutionDetail = async (solutionId) => {
+  try {
+    const response = await Axios.get(`/solutions/${solutionId}`);
+    return response.data.data;
+  } catch (error) {
+    console.error("문제 상세조회 에러:", error);
+    throw error;
+  }
+};
