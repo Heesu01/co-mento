@@ -1,18 +1,46 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { FaRegHeart } from "react-icons/fa";
 import Button from "../components/Button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { Axios } from "../api/Api";
 
 const Problem = () => {
   const navigate = useNavigate();
+  const { problemId } = useParams();
+  const [problemData, setProblemData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const fetchProblem = async () => {
+    try {
+      setIsLoading(true);
+      const response = await Axios.get(`/problems/${problemId}`);
+      setProblemData(response.data.data);
+    } catch (error) {
+      console.error("문제 조회 중 오류 발생:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProblem();
+  }, [problemId]);
+
+  if (isLoading) {
+    return <LoadingText>Loading...</LoadingText>;
+  }
+
+  if (!problemData) {
+    return <ErrorText>문제를 불러오는 데 실패했습니다.</ErrorText>;
+  }
 
   return (
     <Container>
       <TopBox>
-        <Num>#1234</Num>
+        <Num>#{problemData.id}</Num>
         <Name>
-          <span>문제이름</span>
+          <span>{problemData.title}</span>
         </Name>
         <Like>
           <FaRegHeart />
@@ -23,18 +51,10 @@ const Problem = () => {
           <TitleBox>
             <Title>시간 제한</Title>
             <Title>메모리 제한</Title>
-            <Title>제출</Title>
-            <Title>정답</Title>
-            <Title>맞힌 사람</Title>
-            <Title>정답률</Title>
           </TitleBox>
           <InfoBox>
-            <Info>2초</Info>
-            <Info>128MB</Info>
-            <Info>1156442</Info>
-            <Info>453490</Info>
-            <Info>310806</Info>
-            <Info>38.829%</Info>
+            <Info>{problemData.timeLimit}초</Info>
+            <Info>{problemData.memoryLimit}MB</Info>
           </InfoBox>
         </Statistic>
       </StatisticsBox>
@@ -42,28 +62,19 @@ const Problem = () => {
         <ProblemBox>
           <TextTitle>문제</TextTitle>
           <TextContents>
-            <p>
-              두 정수 A와 B를 입력받은 다음, A+B를 출력하는 프로그램을
-              작성하시오.
-            </p>
+            <p>{problemData.content}</p>
           </TextContents>
         </ProblemBox>
         <ProblemBox>
           <TextTitle>입력</TextTitle>
           <TextContents>
-            <p>
-              두 정수 A와 B를 입력받은 다음, A+B를 출력하는 프로그램을
-              작성하시오.
-            </p>
+            <p>{problemData.inputExplain}</p>
           </TextContents>
         </ProblemBox>
         <ProblemBox>
           <TextTitle>출력</TextTitle>
           <TextContents>
-            <p>
-              두 정수 A와 B를 입력받은 다음, A+B를 출력하는 프로그램을
-              작성하시오.
-            </p>
+            <p>{problemData.outputExplain}</p>
           </TextContents>
         </ProblemBox>
       </BoxContainer>
@@ -71,23 +82,23 @@ const Problem = () => {
         <ExampleBox>
           <TextTitle>입력 예시</TextTitle>
           <SmallContents>
-            <p>1 3</p>
+            <p>{problemData.inputExample}</p>
           </SmallContents>
         </ExampleBox>
         <ExampleBox>
           <TextTitle>출력 예시</TextTitle>
           <SmallContents>
-            <p>1 3</p>
+            <p>{problemData.outputExample}</p>
           </SmallContents>
         </ExampleBox>
       </AllExampleBox>
       <BottomBox>
-        <Source>출처: 백준 10000</Source>
+        <Source>출처: {problemData.source}</Source>
         <Button
           children="문제풀기"
           bgc={({ theme }) => theme.colors.deepPink}
           hoverColor={({ theme }) => theme.colors.pink}
-          onClick={() => navigate("/submit")}
+          onClick={() => navigate(`/submit/${problemData.id}`)}
         />
       </BottomBox>
     </Container>
@@ -201,6 +212,15 @@ const BottomBox = styled.div`
 const Source = styled.div`
   margin-left: 10px;
   color: ${(props) => props.theme.colors.gray};
+`;
+const LoadingText = styled.div`
+  text-align: center;
+  font-size: 18px;
+`;
+const ErrorText = styled.div`
+  text-align: center;
+  font-size: 18px;
+  color: red;
 `;
 
 export default Problem;
