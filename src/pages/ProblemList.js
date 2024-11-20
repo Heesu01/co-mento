@@ -1,85 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { FaCheck } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import Pagination from "../components/Pagination";
+import { Axios } from "../api/Api";
 
 const ProblemList = () => {
   const navigate = useNavigate();
-  const problems = [
-    {
-      id: 1,
-      num: 1004,
-      title: "두 수 비교하기",
-      class: "수학",
-      successRate: "89.7%",
-      success: true,
-    },
-    {
-      id: 2,
-      num: 1005,
-      title: "합 구하기",
-      class: "수학",
-      successRate: "72.4%",
-      success: false,
-    },
-    {
-      id: 2,
-      num: 1005,
-      title: "합 구하기",
-      class: "수학",
-      successRate: "72.4%",
-      success: false,
-    },
-    {
-      id: 2,
-      num: 1005,
-      title: "합 구하기",
-      class: "수학",
-      successRate: "72.4%",
-      success: true,
-    },
-    {
-      id: 2,
-      num: 1005,
-      title: "합 구하기",
-      class: "수학",
-      successRate: "72.4%",
-      success: false,
-    },
-    {
-      id: 2,
-      num: 1005,
-      title: "합 구하기",
-      class: "수학",
-      successRate: "72.4%",
-      success: false,
-    },
-    {
-      id: 2,
-      num: 1005,
-      title: "합 구하기",
-      class: "수학",
-      successRate: "72.4%",
-      success: false,
-    },
-    {
-      id: 1,
-      num: 1004,
-      title: "두 수 비교하기",
-      class: "수학",
-      successRate: "89.7%",
-      success: true,
-    },
-    {
-      id: 1,
-      num: 1004,
-      title: "두 수 비교하기",
-      class: "수학",
-      successRate: "89.7%",
-      success: true,
-    },
-  ];
+  const [problems, setProblems] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [algorithmChoseBox, setAlgorithmChoseBox] = useState(false);
+  const [inputAlgorithm, setInputAlgorithm] = useState("");
+  const [algorithm, setAlgorithm] = useState([]);
+  const [difficulty, setDifficulty] = useState("");
+  const [successStatus, setSuccessStatus] = useState("");
+  const [searchKeyword, setSearchKeyword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
   const data = [
     "수학",
     "구현",
@@ -88,11 +26,46 @@ const ProblemList = () => {
     "정렬",
     "문자열",
   ];
-  const [algorithmChoseBox, setAlgorithmChoseBox] = useState(false);
-  const [inputAlgorithm, setInputAlgorithm] = useState("");
-  const [algorithm, setAlgorithm] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = 3;
+
+  const filteredData = data.filter((item) =>
+    item.toLowerCase().includes(inputAlgorithm.toLowerCase())
+  );
+
+  const fetchProblems = async (page) => {
+    try {
+      setIsLoading(true);
+
+      const response = await Axios.get(`/problems`, {
+        params: {
+          page: page - 1,
+          level: difficulty ? convertDifficultyToLevel(difficulty) : undefined,
+          category: algorithm.length > 0 ? algorithm.join(",") : undefined,
+          "is-solved":
+            successStatus !== "" ? successStatus === "성공" : undefined,
+          keyword: searchKeyword || undefined,
+          size: 10,
+        },
+      });
+
+      const { previewList, paginationResponse } = response.data.data;
+
+      setProblems(previewList);
+      setCurrentPage(paginationResponse.currentPage + 1);
+      setTotalPages(paginationResponse.totalPage);
+    } catch (error) {
+      console.error("문제를 불러오는 중 오류가 발생했습니다:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProblems(currentPage);
+  }, [currentPage]);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
 
   const AlgorithmInputClick = () => {
     setAlgorithmChoseBox(!algorithmChoseBox);
@@ -106,9 +79,8 @@ const ProblemList = () => {
     setAlgorithm((prevAlgorithm) => {
       if (!prevAlgorithm.includes(name)) {
         return [...prevAlgorithm, name];
-      } else {
-        return prevAlgorithm;
       }
+      return prevAlgorithm;
     });
   };
 
@@ -118,13 +90,6 @@ const ProblemList = () => {
     );
   };
 
-  const filteredData = data.filter((item) =>
-    item.toLowerCase().includes(inputAlgorithm.toLowerCase())
-  );
-
-  const [difficulty, setDifficulty] = useState("");
-  const [successStatus, setSuccessStatus] = useState("");
-
   const handleDifficultyChange = (value) => {
     setDifficulty(value);
   };
@@ -133,22 +98,44 @@ const ProblemList = () => {
     setSuccessStatus(value);
   };
 
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
+  const handleKeywordChange = (e) => {
+    setSearchKeyword(e.target.value);
+  };
+
+  const applyFilters = () => {
+    setCurrentPage(1);
+    fetchProblems(1);
+  };
+
+  const convertDifficultyToLevel = (difficulty) => {
+    switch (difficulty) {
+      case "쉬움":
+        return 1;
+      case "보통":
+        return 2;
+      case "어려움":
+        return 3;
+      default:
+        return undefined;
+    }
   };
 
   return (
     <Container>
       <SearchBox>
-        <Input placeholder="문제를 검색해주세요."></Input>
-        <SearchBtn>검색</SearchBtn>
+        <Input
+          placeholder="문제를 검색해주세요."
+          value={searchKeyword}
+          onChange={handleKeywordChange}
+        />
+        <SearchBtn onClick={applyFilters}>검색</SearchBtn>
       </SearchBox>
       <SpecificBox>
         <p>알고리즘 분류</p>
         <AlgorithmListBox>
           {algorithm.map((algorithms, index) => (
-            <LiBox>
-              <AlgorithmList key={index}>{algorithms}</AlgorithmList>
+            <LiBox key={index}>
+              <AlgorithmList>{algorithms}</AlgorithmList>
               <Delete onClick={() => DeleteAlgorithm(algorithms)}>X</Delete>
             </LiBox>
           ))}
@@ -160,16 +147,13 @@ const ProblemList = () => {
           onChange={(e) => ChangeAlgorithm(e)}
         />
         {algorithmChoseBox && (
-          <>
-            <ChoseBox>
-              {filteredData.length > 0 &&
-                filteredData.map((datas, index) => (
-                  <Algorithm key={index} onClick={() => AlgorithmClick(datas)}>
-                    {datas}
-                  </Algorithm>
-                ))}
-            </ChoseBox>
-          </>
+          <ChoseBox>
+            {filteredData.map((datas, index) => (
+              <Algorithm key={index} onClick={() => AlgorithmClick(datas)}>
+                {datas}
+              </Algorithm>
+            ))}
+          </ChoseBox>
         )}
         <BottomBox>
           <LeftBox>
@@ -211,44 +195,55 @@ const ProblemList = () => {
                   isChecked={successStatus === "실패"}
                   onChange={() => handleSuccessStatusChange("실패")}
                 />
-                <CustomCheckbox
-                  label="미도전"
-                  value="미도전"
-                  isChecked={successStatus === "미도전"}
-                  onChange={() => handleSuccessStatusChange("미도전")}
-                />
               </CheckBoxGroup>
             </CheckBoxs>
           </LeftBox>
           <RightBox>
             <ButtonBox>
-              <ApplyBtn>적용</ApplyBtn>
-              <ResetBtn>초기화</ResetBtn>
-              <RandomBtn>랜덤</RandomBtn>
+              <ApplyBtn onClick={applyFilters}>적용</ApplyBtn>
+              <ResetBtn
+                onClick={() => {
+                  setAlgorithm([]);
+                  setDifficulty("");
+                  setSuccessStatus("");
+                  setSearchKeyword("");
+                  setCurrentPage(1);
+                  fetchProblems(1);
+                }}
+              >
+                초기화
+              </ResetBtn>
             </ButtonBox>
           </RightBox>
         </BottomBox>
       </SpecificBox>
-      <ListBox>
-        <Top>
-          <Num>문제번호</Num>
-          <Title>문제 제목</Title>
-          <Class>분류</Class>
-          <Success>정답률</Success>
-          <Check>성공여부</Check>
-        </Top>
-        {problems.map((problem) => (
-          <Item key={problem.id} onClick={() => navigate("/problem")}>
-            <Num>{problem.num}</Num>
-            <Title>{problem.title}</Title>
-            <Class>{problem.class}</Class>
-            <Success>{problem.successRate}</Success>
-            <Check>
-              {problem.success ? <FaCheck color="green" /> : <p>X</p>}
-            </Check>
-          </Item>
-        ))}
-      </ListBox>
+      {isLoading ? (
+        <LoadingText>Loading...</LoadingText>
+      ) : (
+        <ListBox>
+          <Top>
+            <Num>문제번호</Num>
+            <Title>문제 제목</Title>
+            <Class>분류</Class>
+            <Success>정답률</Success>
+            <Check>성공여부</Check>
+          </Top>
+          {problems.map((problem) => (
+            <Item
+              key={problem.problemId}
+              onClick={() => navigate(`/problem/${problem.problemId}`)}
+            >
+              <Num>{problem.problemId}</Num>
+              <Title>{problem.title}</Title>
+              <Class>{problem.categories.join(", ")}</Class>
+              <Success>{problem.successRate}</Success>
+              <Check>
+                {problem.hasSolved ? <FaCheck color="green" /> : <p>X</p>}
+              </Check>
+            </Item>
+          ))}
+        </ListBox>
+      )}
       <Pagination
         totalPages={totalPages}
         currentPage={currentPage}
@@ -470,6 +465,10 @@ const Item = styled.div`
   &:hover {
     background-color: ${(props) => props.theme.colors.deepPink};
   }
+`;
+const LoadingText = styled.div`
+  text-align: center;
+  font-size: 18px;
 `;
 
 export default ProblemList;

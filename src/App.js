@@ -27,7 +27,7 @@ function App() {
           <Route path="/auth/join" element={<Join />} />
           <Route path="/mycode/:solutionId" element={<Mycode />} />
           <Route path="/mypage/:userProfileId" element={<Mypage />} />
-          <Route path="/problem" element={<Problem />} />
+          <Route path="/problem/:problemId" element={<Problem />} />
           <Route path="/problemlist" element={<ProblemList />} />
           <Route path="/rank" element={<Rank />} />
           <Route path="/review" element={<Review />} />
