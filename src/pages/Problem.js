@@ -51,10 +51,24 @@ const Problem = () => {
           <TitleBox>
             <Title>시간 제한</Title>
             <Title>메모리 제한</Title>
+            <Title>제출</Title>
+            <Title>맞힌 사람</Title>
+            <Title>정답률</Title>
           </TitleBox>
           <InfoBox>
             <Info>{problemData.timeLimit}초</Info>
             <Info>{problemData.memoryLimit}MB</Info>
+            <Info>{problemData.numberOfProblemSolution}</Info>
+            <Info>{problemData.numberOfCorrectUser}</Info>
+            <Info>
+              {problemData.numberOfProblemSolution > 0
+                ? (
+                    (problemData.numberOfCorrectUser /
+                      problemData.numberOfProblemSolution) *
+                    100
+                  ).toFixed(2) + "%"
+                : "0%"}
+            </Info>
           </InfoBox>
         </Statistic>
       </StatisticsBox>
@@ -104,6 +118,17 @@ const Problem = () => {
     </Container>
   );
 };
+
+const LoadingText = styled.div`
+  text-align: center;
+  font-size: 18px;
+`;
+
+const ErrorText = styled.div`
+  text-align: center;
+  font-size: 18px;
+  color: red;
+`;
 
 const Container = styled.div`
   width: 80%;
@@ -189,7 +214,6 @@ const TextContents = styled.div`
 const AllExampleBox = styled.div`
   display: flex;
   width: 100%;
-  display: flex;
   justify-content: space-between;
   margin: 20px 0;
 `;
@@ -212,15 +236,6 @@ const BottomBox = styled.div`
 const Source = styled.div`
   margin-left: 10px;
   color: ${(props) => props.theme.colors.gray};
-`;
-const LoadingText = styled.div`
-  text-align: center;
-  font-size: 18px;
-`;
-const ErrorText = styled.div`
-  text-align: center;
-  font-size: 18px;
-  color: red;
 `;
 
 export default Problem;
