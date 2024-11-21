@@ -8,28 +8,26 @@ import { Axios } from "../api/Api";
 const ProblemList = () => {
   const navigate = useNavigate();
   const [problems, setProblems] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [algorithmChoseBox, setAlgorithmChoseBox] = useState(false);
   const [inputAlgorithm, setInputAlgorithm] = useState("");
-  const [algorithm, setAlgorithm] = useState([]);
+  const [selectedCategoryIds, setSelectedCategoryIds] = useState([]);
   const [difficulty, setDifficulty] = useState("");
   const [successStatus, setSuccessStatus] = useState("");
   const [searchKeyword, setSearchKeyword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const data = [
-    "수학",
-    "구현",
-    "그리디 알고리즘",
-    "다이나믹",
-    "정렬",
-    "문자열",
-  ];
-
-  const filteredData = data.filter((item) =>
-    item.toLowerCase().includes(inputAlgorithm.toLowerCase())
-  );
+  const fetchCategories = async () => {
+    try {
+      const response = await Axios.get(`/problems/categories`);
+      const categoryData = response.data.data.categoryResponseList;
+      setCategories(categoryData);
+    } catch (error) {
+      console.error("카테고리 데이터를 가져오는 중 오류 발생:", error);
+    }
+  };
 
   const fetchProblems = async (page) => {
     try {
@@ -39,7 +37,10 @@ const ProblemList = () => {
         params: {
           page: page - 1,
           level: difficulty ? convertDifficultyToLevel(difficulty) : undefined,
-          category: algorithm.length > 0 ? algorithm.join(",") : undefined,
+          category:
+            selectedCategoryIds.length > 0
+              ? selectedCategoryIds.join(",")
+              : undefined,
           "is-solved":
             successStatus !== "" ? successStatus === "성공" : undefined,
           keyword: searchKeyword || undefined,
@@ -60,6 +61,10 @@ const ProblemList = () => {
   };
 
   useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  useEffect(() => {
     fetchProblems(currentPage);
   }, [currentPage]);
 
@@ -75,18 +80,18 @@ const ProblemList = () => {
     setInputAlgorithm(e.target.value);
   };
 
-  const AlgorithmClick = (name) => {
-    setAlgorithm((prevAlgorithm) => {
-      if (!prevAlgorithm.includes(name)) {
-        return [...prevAlgorithm, name];
+  const CategoryClick = (category) => {
+    setSelectedCategoryIds((prev) => {
+      if (!prev.includes(category.id)) {
+        return [...prev, category.id];
       }
-      return prevAlgorithm;
+      return prev;
     });
   };
 
-  const DeleteAlgorithm = (name) => {
-    setAlgorithm((prevAlgorithm) =>
-      prevAlgorithm.filter((algorithms) => algorithms !== name)
+  const DeleteCategory = (id) => {
+    setSelectedCategoryIds((prev) =>
+      prev.filter((categoryId) => categoryId !== id)
     );
   };
 
@@ -133,12 +138,15 @@ const ProblemList = () => {
       <SpecificBox>
         <p>알고리즘 분류</p>
         <AlgorithmListBox>
-          {algorithm.map((algorithms, index) => (
-            <LiBox key={index}>
-              <AlgorithmList>{algorithms}</AlgorithmList>
-              <Delete onClick={() => DeleteAlgorithm(algorithms)}>X</Delete>
-            </LiBox>
-          ))}
+          {selectedCategoryIds.map((id) => {
+            const category = categories.find((cat) => cat.id === id);
+            return (
+              <LiBox key={id}>
+                <AlgorithmList>{category?.name}</AlgorithmList>
+                <Delete onClick={() => DeleteCategory(id)}>X</Delete>
+              </LiBox>
+            );
+          })}
         </AlgorithmListBox>
         <AlgorithmInputBox
           placeholder="알고리즘"
@@ -148,11 +156,20 @@ const ProblemList = () => {
         />
         {algorithmChoseBox && (
           <ChoseBox>
-            {filteredData.map((datas, index) => (
-              <Algorithm key={index} onClick={() => AlgorithmClick(datas)}>
-                {datas}
-              </Algorithm>
-            ))}
+            {categories
+              .filter((category) =>
+                category.name
+                  .toLowerCase()
+                  .includes(inputAlgorithm.toLowerCase())
+              )
+              .map((category) => (
+                <Algorithm
+                  key={category.id}
+                  onClick={() => CategoryClick(category)}
+                >
+                  {category.name}
+                </Algorithm>
+              ))}
           </ChoseBox>
         )}
         <BottomBox>
@@ -203,7 +220,7 @@ const ProblemList = () => {
               <ApplyBtn onClick={applyFilters}>적용</ApplyBtn>
               <ResetBtn
                 onClick={() => {
-                  setAlgorithm([]);
+                  setSelectedCategoryIds([]);
                   setDifficulty("");
                   setSuccessStatus("");
                   setSearchKeyword("");
@@ -409,13 +426,6 @@ const ResetBtn = styled.button`
   background-color: ${({ theme }) => theme.colors.red};
   color: white;
 `;
-const RandomBtn = styled.button`
-  padding: 3px 8px;
-  font-size: 12px;
-  background-color: ${({ theme }) => theme.colors.yellow};
-  color: white;
-`;
-
 const ListBox = styled.div`
   width: 100%;
   height: 800px;
