@@ -13,14 +13,14 @@ const ProblemList = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [algorithmChoseBox, setAlgorithmChoseBox] = useState(false);
   const [inputAlgorithm, setInputAlgorithm] = useState("");
-  const [selectedCategoryIds, setSelectedCategoryIds] = useState([]);
+  const [selectedCategoryId, setSelectedCategoryId] = useState("");
   const [difficulty, setDifficulty] = useState("");
   const [successStatus, setSuccessStatus] = useState("");
   const [searchKeyword, setSearchKeyword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const [filters, setFilters] = useState({
-    selectedCategoryIds: [],
+    selectedCategoryId: "",
     difficulty: "",
     successStatus: "",
     searchKeyword: "",
@@ -47,10 +47,7 @@ const ProblemList = () => {
             level: filters.difficulty
               ? convertDifficultyToLevel(filters.difficulty)
               : undefined,
-            category:
-              filters.selectedCategoryIds.length > 0
-                ? filters.selectedCategoryIds.join(",")
-                : undefined,
+            category: filters.selectedCategoryId || undefined,
             "is-solved":
               filters.successStatus !== ""
                 ? filters.successStatus === "성공"
@@ -85,28 +82,14 @@ const ProblemList = () => {
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
+  const handleCategoryClick = (category) => {
+    setInputAlgorithm(category.name);
+    setSelectedCategoryId(category.id);
+    setAlgorithmChoseBox(false);
+  };
 
-  const AlgorithmInputClick = () => {
+  const toggleAlgorithmBox = () => {
     setAlgorithmChoseBox(!algorithmChoseBox);
-  };
-
-  const ChangeAlgorithm = (e) => {
-    setInputAlgorithm(e.target.value);
-  };
-
-  const CategoryClick = (category) => {
-    setSelectedCategoryIds((prev) => {
-      if (!prev.includes(category.id)) {
-        return [...prev, category.id];
-      }
-      return prev;
-    });
-  };
-
-  const DeleteCategory = (id) => {
-    setSelectedCategoryIds((prev) =>
-      prev.filter((categoryId) => categoryId !== id)
-    );
   };
 
   const handleDifficultyChange = (value) => {
@@ -123,7 +106,7 @@ const ProblemList = () => {
 
   const applyFilters = () => {
     setFilters({
-      selectedCategoryIds,
+      selectedCategoryId,
       difficulty,
       successStatus,
       searchKeyword,
@@ -132,12 +115,13 @@ const ProblemList = () => {
   };
 
   const resetFilters = () => {
-    setSelectedCategoryIds([]);
+    setInputAlgorithm("");
     setDifficulty("");
     setSuccessStatus("");
     setSearchKeyword("");
+    setSelectedCategoryId("");
     setFilters({
-      selectedCategoryIds: [],
+      selectedCategoryId: "",
       difficulty: "",
       successStatus: "",
       searchKeyword: "",
@@ -170,39 +154,22 @@ const ProblemList = () => {
       </SearchBox>
       <SpecificBox>
         <p>알고리즘 분류</p>
-        <AlgorithmListBox>
-          {selectedCategoryIds.map((id) => {
-            const category = categories.find((cat) => cat.id === id);
-            return (
-              <LiBox key={id}>
-                <AlgorithmList>{category?.name}</AlgorithmList>
-                <Delete onClick={() => DeleteCategory(id)}>X</Delete>
-              </LiBox>
-            );
-          })}
-        </AlgorithmListBox>
         <AlgorithmInputBox
-          placeholder="알고리즘"
+          placeholder="카테고리 선택"
           value={inputAlgorithm}
-          onClick={AlgorithmInputClick}
-          onChange={(e) => ChangeAlgorithm(e)}
+          onClick={toggleAlgorithmBox}
+          readOnly
         />
         {algorithmChoseBox && (
           <ChoseBox>
-            {categories
-              .filter((category) =>
-                category.name
-                  .toLowerCase()
-                  .includes(inputAlgorithm.toLowerCase())
-              )
-              .map((category) => (
-                <Algorithm
-                  key={category.id}
-                  onClick={() => CategoryClick(category)}
-                >
-                  {category.name}
-                </Algorithm>
-              ))}
+            {categories.map((category) => (
+              <Algorithm
+                key={category.id}
+                onClick={() => handleCategoryClick(category)}
+              >
+                {category.name}
+              </Algorithm>
+            ))}
           </ChoseBox>
         )}
         <BottomBox>
@@ -264,7 +231,6 @@ const ProblemList = () => {
             <Num>문제번호</Num>
             <Title>문제 제목</Title>
             <Class>분류</Class>
-            <Success>정답률</Success>
             <Check>성공여부</Check>
           </Top>
           {problems.map((problem) => (
@@ -275,7 +241,6 @@ const ProblemList = () => {
               <Num>{problem.problemId}</Num>
               <Title>{problem.title}</Title>
               <Class>{problem.categories.join(", ")}</Class>
-              <Success>{problem.successRate}</Success>
               <Check>
                 {problem.hasSolved ? <FaCheck color="green" /> : <p>X</p>}
               </Check>
@@ -323,47 +288,29 @@ const SpecificBox = styled.div`
   border: 1px solid ${({ theme }) => theme.colors.gray2};
   padding: 20px 35px;
 `;
-const AlgorithmListBox = styled.div`
-  display: flex;
-  gap: 10px;
-  margin-bottom: 10px;
-`;
-const LiBox = styled.div`
-  display: flex;
-  align-items: center;
-  margin-top: 10px;
-  background-color: ${({ theme }) => theme.colors.deepPink};
-  padding: 3px 7px 3px 10px;
-  border-radius: 8px;
-`;
-const AlgorithmList = styled.div`
-  font-size: 13px;
-`;
-const Delete = styled.p`
-  margin-left: 10px;
-  font-size: 11px;
-  cursor: pointer;
-`;
+
 const AlgorithmInputBox = styled.input`
   width: 100%;
   padding: 5px 10px;
   outline: none;
   border: 1px solid ${({ theme }) => theme.colors.gray2};
+  margin-top: 10px;
+  cursor: pointer;
 `;
 const ChoseBox = styled.div`
   width: 100%;
-  height: 130px;
+  max-height: 130px;
+  overflow-y: auto;
   background-color: white;
-  overflow-y: scroll;
-  border-left: 1px solid ${({ theme }) => theme.colors.gray2};
-  border-right: 1px solid ${({ theme }) => theme.colors.gray2};
-  border-bottom: 1px solid ${({ theme }) => theme.colors.gray2};
-  padding-top: 3px;
+  border: 1px solid ${({ theme }) => theme.colors.gray2};
+  margin-top: 5px;
+  z-index: 10;
+  position: absolute;
 `;
+
 const Algorithm = styled.p`
-  font-size: 14px;
-  margin-bottom: 6px;
-  padding: 3px 10px;
+  padding: 5px 10px;
+  cursor: pointer;
   &:hover {
     background-color: ${({ theme }) => theme.colors.gray3};
   }
@@ -472,9 +419,6 @@ const Title = styled.div`
 const Class = styled.div`
   width: 30%;
 `;
-const Success = styled.div`
-  width: 10%;
-`;
 const Check = styled.div`
   width: 10%;
   p {
@@ -502,5 +446,4 @@ const LoadingText = styled.div`
   text-align: center;
   font-size: 18px;
 `;
-
 export default ProblemList;
