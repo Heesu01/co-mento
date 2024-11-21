@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import styled from "styled-components";
 import { FaCheck } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
@@ -19,6 +19,13 @@ const ProblemList = () => {
   const [searchKeyword, setSearchKeyword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  const [filters, setFilters] = useState({
+    selectedCategoryIds: [],
+    difficulty: "",
+    successStatus: "",
+    searchKeyword: "",
+  });
+
   const fetchCategories = async () => {
     try {
       const response = await Axios.get(`/problems/categories`);
@@ -29,36 +36,43 @@ const ProblemList = () => {
     }
   };
 
-  const fetchProblems = async (page) => {
-    try {
-      setIsLoading(true);
+  const fetchProblems = useCallback(
+    async (page) => {
+      try {
+        setIsLoading(true);
 
-      const response = await Axios.get(`/problems`, {
-        params: {
-          page: page - 1,
-          level: difficulty ? convertDifficultyToLevel(difficulty) : undefined,
-          category:
-            selectedCategoryIds.length > 0
-              ? selectedCategoryIds.join(",")
+        const response = await Axios.get(`/problems`, {
+          params: {
+            page: page - 1,
+            level: filters.difficulty
+              ? convertDifficultyToLevel(filters.difficulty)
               : undefined,
-          "is-solved":
-            successStatus !== "" ? successStatus === "성공" : undefined,
-          keyword: searchKeyword || undefined,
-          size: 10,
-        },
-      });
+            category:
+              filters.selectedCategoryIds.length > 0
+                ? filters.selectedCategoryIds.join(",")
+                : undefined,
+            "is-solved":
+              filters.successStatus !== ""
+                ? filters.successStatus === "성공"
+                : undefined,
+            keyword: filters.searchKeyword || undefined,
+            size: 10,
+          },
+        });
 
-      const { previewList, paginationResponse } = response.data.data;
+        const { previewList, paginationResponse } = response.data.data;
 
-      setProblems(previewList);
-      setCurrentPage(paginationResponse.currentPage + 1);
-      setTotalPages(paginationResponse.totalPage);
-    } catch (error) {
-      console.error("문제를 불러오는 중 오류가 발생했습니다:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+        setProblems(previewList);
+        setCurrentPage(paginationResponse.currentPage + 1);
+        setTotalPages(paginationResponse.totalPage);
+      } catch (error) {
+        console.error("문제를 불러오는 중 오류가 발생했습니다:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [filters]
+  );
 
   useEffect(() => {
     fetchCategories();
@@ -66,7 +80,7 @@ const ProblemList = () => {
 
   useEffect(() => {
     fetchProblems(currentPage);
-  }, [currentPage]);
+  }, [currentPage, fetchProblems]);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -108,8 +122,27 @@ const ProblemList = () => {
   };
 
   const applyFilters = () => {
+    setFilters({
+      selectedCategoryIds,
+      difficulty,
+      successStatus,
+      searchKeyword,
+    });
     setCurrentPage(1);
-    fetchProblems(1);
+  };
+
+  const resetFilters = () => {
+    setSelectedCategoryIds([]);
+    setDifficulty("");
+    setSuccessStatus("");
+    setSearchKeyword("");
+    setFilters({
+      selectedCategoryIds: [],
+      difficulty: "",
+      successStatus: "",
+      searchKeyword: "",
+    });
+    setCurrentPage(1);
   };
 
   const convertDifficultyToLevel = (difficulty) => {
@@ -218,18 +251,7 @@ const ProblemList = () => {
           <RightBox>
             <ButtonBox>
               <ApplyBtn onClick={applyFilters}>적용</ApplyBtn>
-              <ResetBtn
-                onClick={() => {
-                  setSelectedCategoryIds([]);
-                  setDifficulty("");
-                  setSuccessStatus("");
-                  setSearchKeyword("");
-                  setCurrentPage(1);
-                  fetchProblems(1);
-                }}
-              >
-                초기화
-              </ResetBtn>
+              <ResetBtn onClick={resetFilters}>초기화</ResetBtn>
             </ButtonBox>
           </RightBox>
         </BottomBox>

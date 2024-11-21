@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import styled from "styled-components";
 import { FaRegHeart } from "react-icons/fa";
 import Button from "../components/Button";
@@ -11,7 +11,7 @@ const Problem = () => {
   const [problemData, setProblemData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const fetchProblem = async () => {
+  const fetchProblem = useCallback(async () => {
     try {
       setIsLoading(true);
       const response = await Axios.get(`/problems/${problemId}`);
@@ -21,11 +21,11 @@ const Problem = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [problemId]);
 
   useEffect(() => {
     fetchProblem();
-  }, [problemId]);
+  }, [fetchProblem]);
 
   if (isLoading) {
     return <LoadingText>Loading...</LoadingText>;
