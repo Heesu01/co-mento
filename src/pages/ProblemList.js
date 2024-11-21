@@ -1,129 +1,96 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import styled from "styled-components";
 import { FaCheck } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import Pagination from "../components/Pagination";
+import { Axios } from "../api/Api";
 
 const ProblemList = () => {
   const navigate = useNavigate();
-  const problems = [
-    {
-      id: 1,
-      num: 1004,
-      title: "두 수 비교하기",
-      class: "수학",
-      successRate: "89.7%",
-      success: true,
-    },
-    {
-      id: 2,
-      num: 1005,
-      title: "합 구하기",
-      class: "수학",
-      successRate: "72.4%",
-      success: false,
-    },
-    {
-      id: 2,
-      num: 1005,
-      title: "합 구하기",
-      class: "수학",
-      successRate: "72.4%",
-      success: false,
-    },
-    {
-      id: 2,
-      num: 1005,
-      title: "합 구하기",
-      class: "수학",
-      successRate: "72.4%",
-      success: true,
-    },
-    {
-      id: 2,
-      num: 1005,
-      title: "합 구하기",
-      class: "수학",
-      successRate: "72.4%",
-      success: false,
-    },
-    {
-      id: 2,
-      num: 1005,
-      title: "합 구하기",
-      class: "수학",
-      successRate: "72.4%",
-      success: false,
-    },
-    {
-      id: 2,
-      num: 1005,
-      title: "합 구하기",
-      class: "수학",
-      successRate: "72.4%",
-      success: false,
-    },
-    {
-      id: 1,
-      num: 1004,
-      title: "두 수 비교하기",
-      class: "수학",
-      successRate: "89.7%",
-      success: true,
-    },
-    {
-      id: 1,
-      num: 1004,
-      title: "두 수 비교하기",
-      class: "수학",
-      successRate: "89.7%",
-      success: true,
-    },
-  ];
-  const data = [
-    "수학",
-    "구현",
-    "그리디 알고리즘",
-    "다이나믹",
-    "정렬",
-    "문자열",
-  ];
+  const [problems, setProblems] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [algorithmChoseBox, setAlgorithmChoseBox] = useState(false);
   const [inputAlgorithm, setInputAlgorithm] = useState("");
-  const [algorithm, setAlgorithm] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = 3;
-
-  const AlgorithmInputClick = () => {
-    setAlgorithmChoseBox(!algorithmChoseBox);
-  };
-
-  const ChangeAlgorithm = (e) => {
-    setInputAlgorithm(e.target.value);
-  };
-
-  const AlgorithmClick = (name) => {
-    setAlgorithm((prevAlgorithm) => {
-      if (!prevAlgorithm.includes(name)) {
-        return [...prevAlgorithm, name];
-      } else {
-        return prevAlgorithm;
-      }
-    });
-  };
-
-  const DeleteAlgorithm = (name) => {
-    setAlgorithm((prevAlgorithm) =>
-      prevAlgorithm.filter((algorithms) => algorithms !== name)
-    );
-  };
-
-  const filteredData = data.filter((item) =>
-    item.toLowerCase().includes(inputAlgorithm.toLowerCase())
-  );
-
+  const [selectedCategoryId, setSelectedCategoryId] = useState("");
   const [difficulty, setDifficulty] = useState("");
   const [successStatus, setSuccessStatus] = useState("");
+  const [searchKeyword, setSearchKeyword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [filters, setFilters] = useState({
+    selectedCategoryId: "",
+    difficulty: "",
+    successStatus: "",
+    searchKeyword: "",
+  });
+
+  const fetchCategories = async () => {
+    try {
+      const response = await Axios.get(`/problems/categories`);
+      const categoryData = response.data.data.categoryResponseList;
+      setCategories(categoryData);
+    } catch (error) {
+      console.error("카테고리 데이터를 가져오는 중 오류 발생:", error);
+    }
+  };
+
+  const fetchProblems = useCallback(
+    async (page) => {
+      try {
+        setIsLoading(true);
+
+        const response = await Axios.get(`/problems`, {
+          params: {
+            page: page - 1,
+            level: filters.difficulty
+              ? convertDifficultyToLevel(filters.difficulty)
+              : undefined,
+            category: filters.selectedCategoryId || undefined,
+            "is-solved":
+              filters.successStatus !== ""
+                ? filters.successStatus === "성공"
+                : undefined,
+            keyword: filters.searchKeyword || undefined,
+            size: 10,
+          },
+        });
+
+        const { previewList, paginationResponse } = response.data.data;
+
+        setProblems(previewList);
+        setCurrentPage(paginationResponse.currentPage + 1);
+        setTotalPages(paginationResponse.totalPage);
+      } catch (error) {
+        console.error("문제를 불러오는 중 오류가 발생했습니다:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [filters]
+  );
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  useEffect(() => {
+    fetchProblems(currentPage);
+  }, [currentPage, fetchProblems]);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+  const handleCategoryClick = (category) => {
+    setInputAlgorithm(category.name);
+    setSelectedCategoryId(category.id);
+    setAlgorithmChoseBox(false);
+  };
+
+  const toggleAlgorithmBox = () => {
+    setAlgorithmChoseBox(!algorithmChoseBox);
+  };
 
   const handleDifficultyChange = (value) => {
     setDifficulty(value);
@@ -133,43 +100,77 @@ const ProblemList = () => {
     setSuccessStatus(value);
   };
 
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
+  const handleKeywordChange = (e) => {
+    setSearchKeyword(e.target.value);
+  };
+
+  const applyFilters = () => {
+    setFilters({
+      selectedCategoryId,
+      difficulty,
+      successStatus,
+      searchKeyword,
+    });
+    setCurrentPage(1);
+  };
+
+  const resetFilters = () => {
+    setInputAlgorithm("");
+    setDifficulty("");
+    setSuccessStatus("");
+    setSearchKeyword("");
+    setSelectedCategoryId("");
+    setFilters({
+      selectedCategoryId: "",
+      difficulty: "",
+      successStatus: "",
+      searchKeyword: "",
+    });
+    setCurrentPage(1);
+  };
+
+  const convertDifficultyToLevel = (difficulty) => {
+    switch (difficulty) {
+      case "쉬움":
+        return 1;
+      case "보통":
+        return 2;
+      case "어려움":
+        return 3;
+      default:
+        return undefined;
+    }
   };
 
   return (
     <Container>
       <SearchBox>
-        <Input placeholder="문제를 검색해주세요."></Input>
-        <SearchBtn>검색</SearchBtn>
+        <Input
+          placeholder="문제를 검색해주세요."
+          value={searchKeyword}
+          onChange={handleKeywordChange}
+        />
+        <SearchBtn onClick={applyFilters}>검색</SearchBtn>
       </SearchBox>
       <SpecificBox>
         <p>알고리즘 분류</p>
-        <AlgorithmListBox>
-          {algorithm.map((algorithms, index) => (
-            <LiBox>
-              <AlgorithmList key={index}>{algorithms}</AlgorithmList>
-              <Delete onClick={() => DeleteAlgorithm(algorithms)}>X</Delete>
-            </LiBox>
-          ))}
-        </AlgorithmListBox>
         <AlgorithmInputBox
-          placeholder="알고리즘"
+          placeholder="카테고리 선택"
           value={inputAlgorithm}
-          onClick={AlgorithmInputClick}
-          onChange={(e) => ChangeAlgorithm(e)}
+          onClick={toggleAlgorithmBox}
+          readOnly
         />
         {algorithmChoseBox && (
-          <>
-            <ChoseBox>
-              {filteredData.length > 0 &&
-                filteredData.map((datas, index) => (
-                  <Algorithm key={index} onClick={() => AlgorithmClick(datas)}>
-                    {datas}
-                  </Algorithm>
-                ))}
-            </ChoseBox>
-          </>
+          <ChoseBox>
+            {categories.map((category) => (
+              <Algorithm
+                key={category.id}
+                onClick={() => handleCategoryClick(category)}
+              >
+                {category.name}
+              </Algorithm>
+            ))}
+          </ChoseBox>
         )}
         <BottomBox>
           <LeftBox>
@@ -211,44 +212,42 @@ const ProblemList = () => {
                   isChecked={successStatus === "실패"}
                   onChange={() => handleSuccessStatusChange("실패")}
                 />
-                <CustomCheckbox
-                  label="미도전"
-                  value="미도전"
-                  isChecked={successStatus === "미도전"}
-                  onChange={() => handleSuccessStatusChange("미도전")}
-                />
               </CheckBoxGroup>
             </CheckBoxs>
           </LeftBox>
           <RightBox>
             <ButtonBox>
-              <ApplyBtn>적용</ApplyBtn>
-              <ResetBtn>초기화</ResetBtn>
-              <RandomBtn>랜덤</RandomBtn>
+              <ApplyBtn onClick={applyFilters}>적용</ApplyBtn>
+              <ResetBtn onClick={resetFilters}>초기화</ResetBtn>
             </ButtonBox>
           </RightBox>
         </BottomBox>
       </SpecificBox>
-      <ListBox>
-        <Top>
-          <Num>문제번호</Num>
-          <Title>문제 제목</Title>
-          <Class>분류</Class>
-          <Success>정답률</Success>
-          <Check>성공여부</Check>
-        </Top>
-        {problems.map((problem) => (
-          <Item key={problem.id} onClick={() => navigate("/problem")}>
-            <Num>{problem.num}</Num>
-            <Title>{problem.title}</Title>
-            <Class>{problem.class}</Class>
-            <Success>{problem.successRate}</Success>
-            <Check>
-              {problem.success ? <FaCheck color="green" /> : <p>X</p>}
-            </Check>
-          </Item>
-        ))}
-      </ListBox>
+      {isLoading ? (
+        <LoadingText>Loading...</LoadingText>
+      ) : (
+        <ListBox>
+          <Top>
+            <Num>문제번호</Num>
+            <Title>문제 제목</Title>
+            <Class>분류</Class>
+            <Check>성공여부</Check>
+          </Top>
+          {problems.map((problem) => (
+            <Item
+              key={problem.problemId}
+              onClick={() => navigate(`/problem/${problem.problemId}`)}
+            >
+              <Num>{problem.problemId}</Num>
+              <Title>{problem.title}</Title>
+              <Class>{problem.categories.join(", ")}</Class>
+              <Check>
+                {problem.hasSolved ? <FaCheck color="green" /> : <p>X</p>}
+              </Check>
+            </Item>
+          ))}
+        </ListBox>
+      )}
       <Pagination
         totalPages={totalPages}
         currentPage={currentPage}
@@ -289,47 +288,29 @@ const SpecificBox = styled.div`
   border: 1px solid ${({ theme }) => theme.colors.gray2};
   padding: 20px 35px;
 `;
-const AlgorithmListBox = styled.div`
-  display: flex;
-  gap: 10px;
-  margin-bottom: 10px;
-`;
-const LiBox = styled.div`
-  display: flex;
-  align-items: center;
-  margin-top: 10px;
-  background-color: ${({ theme }) => theme.colors.deepPink};
-  padding: 3px 7px 3px 10px;
-  border-radius: 8px;
-`;
-const AlgorithmList = styled.div`
-  font-size: 13px;
-`;
-const Delete = styled.p`
-  margin-left: 10px;
-  font-size: 11px;
-  cursor: pointer;
-`;
+
 const AlgorithmInputBox = styled.input`
   width: 100%;
   padding: 5px 10px;
   outline: none;
   border: 1px solid ${({ theme }) => theme.colors.gray2};
+  margin-top: 10px;
+  cursor: pointer;
 `;
 const ChoseBox = styled.div`
   width: 100%;
-  height: 130px;
+  max-height: 130px;
+  overflow-y: auto;
   background-color: white;
-  overflow-y: scroll;
-  border-left: 1px solid ${({ theme }) => theme.colors.gray2};
-  border-right: 1px solid ${({ theme }) => theme.colors.gray2};
-  border-bottom: 1px solid ${({ theme }) => theme.colors.gray2};
-  padding-top: 3px;
+  border: 1px solid ${({ theme }) => theme.colors.gray2};
+  margin-top: 5px;
+  z-index: 10;
+  position: absolute;
 `;
+
 const Algorithm = styled.p`
-  font-size: 14px;
-  margin-bottom: 6px;
-  padding: 3px 10px;
+  padding: 5px 10px;
+  cursor: pointer;
   &:hover {
     background-color: ${({ theme }) => theme.colors.gray3};
   }
@@ -414,13 +395,6 @@ const ResetBtn = styled.button`
   background-color: ${({ theme }) => theme.colors.red};
   color: white;
 `;
-const RandomBtn = styled.button`
-  padding: 3px 8px;
-  font-size: 12px;
-  background-color: ${({ theme }) => theme.colors.yellow};
-  color: white;
-`;
-
 const ListBox = styled.div`
   width: 100%;
   height: 800px;
@@ -445,9 +419,6 @@ const Title = styled.div`
 const Class = styled.div`
   width: 30%;
 `;
-const Success = styled.div`
-  width: 10%;
-`;
 const Check = styled.div`
   width: 10%;
   p {
@@ -471,5 +442,8 @@ const Item = styled.div`
     background-color: ${(props) => props.theme.colors.deepPink};
   }
 `;
-
+const LoadingText = styled.div`
+  text-align: center;
+  font-size: 18px;
+`;
 export default ProblemList;
