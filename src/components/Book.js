@@ -1,53 +1,58 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { Axios } from "../api/Api";
 
 const Book = () => {
   const navigate = useNavigate();
+  const [books, setBooks] = useState([]);
 
-  const problems = [
-    "0000 두수비교하기",
-    "0001 A+B",
-    "0002 큰수비교",
-    "0003 구간합",
-    "0004 소수판별",
-  ];
+  const fetchBooks = async () => {
+    try {
+      const response = await Axios.get("/problems/collections");
+      const fetchedBooks = response.data.data.collections;
 
-  const books = [
-    { title: "정렬 탐색 완전정복", tags: "#수학 #정렬 #탐색 #트리" },
-    { title: "그래프 마스터", tags: "#그래프 #DFS #BFS #최단경로" },
-    { title: "동적 계획법", tags: "#DP #최적화 #재귀" },
-  ];
+      const bookDataWithProblems = await Promise.all(
+        fetchedBooks.map(async (book) => {
+          const problemResponse = await Axios.get("/problems", {
+            params: { collection: book.id },
+          });
+          const problems = problemResponse.data.data.previewList.map(
+            (problem) => ({
+              problemId: problem.problemId,
+              title: problem.title,
+            })
+          );
+          return { title: book.name, tags: book.description, problems };
+        })
+      );
+
+      setBooks(bookDataWithProblems);
+    } catch (error) {
+      console.error("문제집 또는 문제 데이터를 가져오는 중 오류 발생:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchBooks();
+  }, []);
 
   return (
     <Container>
       <Top>
         <p>문제집</p>
+        <p onClick={() => navigate(`/book`)}>더보기</p>
       </Top>
       <ItemBox>
         {books.map((book, index) => (
           <Item key={index}>
             <List>
-              {problems.map((problem, i) => (
-                <Problem key={i} onClick={() => navigate("/problem")}>
-                  {problem}
-                </Problem>
-              ))}
-            </List>
-            <Cover>
-              <Title>{book.title}</Title>
-              <Tag>{book.tags}</Tag>
-            </Cover>
-          </Item>
-        ))}
-      </ItemBox>
-      <ItemBox>
-        {books.map((book, index) => (
-          <Item key={index}>
-            <List>
-              {problems.map((problem, i) => (
-                <Problem key={i} onClick={() => navigate("/problem")}>
-                  {problem}
+              {book.problems.map((problem) => (
+                <Problem
+                  key={problem.problemId}
+                  onClick={() => navigate(`/problem/${problem.problemId}`)}
+                >
+                  {problem.title}
                 </Problem>
               ))}
             </List>
@@ -70,6 +75,7 @@ const Container = styled.div`
   padding: 40px 40px;
   padding-bottom: 0;
 `;
+
 const Top = styled.div`
   display: flex;
   justify-content: space-between;
@@ -79,18 +85,21 @@ const Top = styled.div`
     cursor: pointer;
   }
 `;
+
 const ItemBox = styled.div`
   padding: 40px 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
 `;
+
 const Item = styled.div`
   background-color: ${(props) => props.theme.colors.black2};
   width: 30%;
-  height: 100%;
   height: 400px;
   border-radius: 10px;
+  position: relative;
+  overflow: hidden;
   transition: transform 0.3s, box-shadow 0.3s;
   &:hover {
     transform: translateY(-5px);
@@ -104,15 +113,19 @@ const List = styled.div`
   line-height: 2em;
   padding: 20px;
 `;
+
 const Problem = styled.div`
   cursor: pointer;
   &:hover {
     color: #ffd700;
   }
 `;
+
 const Cover = styled.div`
   width: 100%;
-  height: 50%;
+  height: 40%;
+  position: absolute;
+  bottom: 0;
   border-radius: 0 0 10px 10px;
   background-color: ${(props) => props.theme.colors.beige};
   padding: 30px;
@@ -124,9 +137,11 @@ const Title = styled.p`
   font-weight: 700;
   font-size: 20px;
 `;
+
 const Tag = styled.p`
   font-weight: 500;
   font-size: 15px;
+  color: ${(props) => props.theme.colors.gray};
 `;
 
 export default Book;
