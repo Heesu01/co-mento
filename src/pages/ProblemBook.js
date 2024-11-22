@@ -1,65 +1,46 @@
-import React, { useState } from "react";
-import styled from "styled-components";
-import Select from "react-select";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
+import { Axios } from "../api/Api";
+import Select from "react-select";
 
 const ProblemBook = () => {
   const navigate = useNavigate();
+  const [problemSets, setProblemSets] = useState([]);
   const [selectedSet, setSelectedSet] = useState(null);
 
-  const problemSets = [
-    {
-      value: "set1",
-      label: "그리디",
-      problems: [
-        "#1002 문제1",
-        "#2312 문제2",
-        "#2131 문제3",
-        "#2131 문제3",
-        "#2131 문제3",
-        "#2131 문제3",
-        "#2131 문제3",
-        "#2131 문제3",
-        "#2131 문제3",
-        "#2131 문제3",
-        "#2131 문제3",
-        "#2131 문제3",
-      ],
-    },
-    {
-      value: "set2",
-      label: "수학",
-      problems: [
-        "#1234 수 비교하기",
-        "#1434 기본연산",
-        "#4893 수학",
-        "#4893 수학",
-        "#4893 수학",
-        "#4893 수학",
-        "#4893 수학",
-        "#4893 수학",
-        "#4893 수학",
-      ],
-    },
-    {
-      value: "set3",
-      label: "문자열",
-      problems: [
-        "#1231 문자열 이어붙이기",
-        "#1312 문제8",
-        "#12 문제9",
-        "#1231 문자열 이어붙이기",
-        "#1231 문자열 이어붙이기",
-        "#1231 문자열 이어붙이기",
-        "#1231 문자열 이어붙이기",
-        "#1231 문자열 이어붙이기",
-        "#1231 문자열 이어붙이기",
-        "#1231 문자열 이어붙이기",
-        "#1231 문자열 이어붙이기",
-        "#1231 문자열 이어붙이기",
-      ],
-    },
-  ];
+  const fetchProblemBooks = async () => {
+    try {
+      const response = await Axios.get("/problems/collections");
+      const collections = response.data.data.collections;
+
+      const fetchedProblemSets = await Promise.all(
+        collections.map(async (collection) => {
+          const problemResponse = await Axios.get("/problems", {
+            params: { collection: collection.id },
+          });
+
+          const problems = problemResponse.data.data.previewList.map(
+            (problem) => `${problem.problemId} ${problem.title}`
+          );
+
+          return {
+            value: collection.id,
+            label: collection.name,
+            problems,
+          };
+        })
+      );
+
+      setProblemSets(fetchedProblemSets);
+    } catch (error) {
+      console.error("문제집 또는 문제 데이터를 가져오는 중 오류 발생:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchProblemBooks();
+  }, []);
 
   const customStyles = {
     control: (base) => ({
@@ -107,8 +88,11 @@ const ProblemBook = () => {
         <ProblemsList>
           <h3>{selectedSet.label}</h3>
           {selectedSet.problems.map((problem, index) => (
-            <ProblemItem key={index} onClick={() => navigate("/problem")}>
-              <span>{problem}</span>
+            <ProblemItem
+              key={index}
+              onClick={() => navigate(`/problem/${problem.split(" ")[0]}`)}
+            >
+              <span>{problem.split(" ").slice(1).join(" ")}</span>
             </ProblemItem>
           ))}
         </ProblemsList>
