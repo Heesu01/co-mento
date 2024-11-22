@@ -1,66 +1,68 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { Axios } from "../api/Api";
 
 const Difficulty = () => {
   const navigate = useNavigate();
+  const [difficulties, setDifficulties] = useState([]);
 
-  const difficulties = [
-    {
-      level: "기초",
-      problems: [
-        "0000 두수비교하기",
-        "0001 A+B",
-        "0002 큰수비교",
-        "0003 구간합",
-        "0004 소수판별",
-        "0004 소수판별",
-        "0004 소수판별",
-      ],
-    },
-    {
-      level: "초급",
-      problems: [
-        "0000 두수비교하기",
-        "0001 A+B",
-        "0002 큰수비교",
-        "0003 구간합",
-        "0004 소수판별",
-        "0004 소수판별",
-        "0004 소수판별",
-      ],
-    },
-    {
-      level: "중급",
-      problems: [
-        "0000 두수비교하기",
-        "0001 A+B",
-        "0002 큰수비교",
-        "0003 구간합",
-        "0004 소수판별",
-        "0004 소수판별",
-        "0004 소수판별",
-      ],
-    },
-  ];
+  const fetchDifficulties = async () => {
+    try {
+      const levels = [1, 2, 3];
+      const promises = levels.map((level) =>
+        Axios.get(`/problems`, { params: { level } })
+      );
+
+      const responses = await Promise.all(promises);
+
+      const fetchedDifficulties = responses.map((response, index) => ({
+        level: index + 1,
+        problems: response.data.data.previewList,
+      }));
+
+      setDifficulties(fetchedDifficulties);
+    } catch (error) {
+      console.error("난이도별 문제를 가져오는 중 오류 발생:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchDifficulties();
+  }, []);
 
   return (
     <Container>
       <Top>
         <p>난이도별 보기</p>
-        <p>더보기</p>
+        <p onClick={() => navigate(`/problemlist`)}>문제 더보기</p>
       </Top>
       <ItemBox>
-        {difficulties.map((difficulty, index) => (
-          <Item key={index}>
+        {difficulties.map((difficulty) => (
+          <Item key={difficulty.level}>
             <Title>
-              <p>{difficulty.level}</p>
-              <p>더보기</p>
+              <p>
+                {difficulty.level === 1
+                  ? "기초"
+                  : difficulty.level === 2
+                  ? "초급"
+                  : "중급"}
+              </p>
+              {/* <p
+                onClick={() =>
+                  navigate(`/problemlist?level=${difficulty.level}`)
+                }
+              >
+                더보기
+              </p> */}
             </Title>
             <List>
-              {difficulty.problems.map((problem, i) => (
-                <Problem key={i} onClick={() => navigate("/problem")}>
-                  {problem}
+              {difficulty.problems.slice(0, 5).map((problem) => (
+                <Problem
+                  key={problem.problemId}
+                  onClick={() => navigate(`/problem/${problem.problemId}`)}
+                >
+                  {problem.title}
                 </Problem>
               ))}
             </List>
@@ -79,6 +81,7 @@ const Container = styled.div`
   padding: 40px 40px;
   padding-bottom: 0;
 `;
+
 const Top = styled.div`
   display: flex;
   justify-content: space-between;
@@ -88,12 +91,14 @@ const Top = styled.div`
     cursor: pointer;
   }
 `;
+
 const ItemBox = styled.div`
   padding: 40px 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
 `;
+
 const Item = styled.div`
   background-color: ${(props) => props.theme.colors.black2};
   width: 31%;
@@ -106,21 +111,28 @@ const Item = styled.div`
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
   }
 `;
+
 const Title = styled.div`
   color: ${(props) => props.theme.colors.white};
-  height: 60px;
+  height: 40px;
   display: flex;
+  font-size: 20px;
+  font-weight: 600;
   justify-content: space-between;
-  p {
+  /* p {
     cursor: pointer;
-  }
+  } */
+  border-bottom: 1px solid ${(props) => props.theme.colors.white};
 `;
+
 const List = styled.div`
+  margin-top: 20px;
   display: flex;
   flex-direction: column;
   color: ${(props) => props.theme.colors.white};
   line-height: 2em;
 `;
+
 const Problem = styled.div`
   cursor: pointer;
   &:hover {
