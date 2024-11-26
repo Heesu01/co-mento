@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { fetchUserProfile } from "../api/UserApi";
 import { useParams, useNavigate } from "react-router-dom";
+import { Link } from 'react-router-dom';
 
 const Mypage = () => {
   const { userProfileId } = useParams();
@@ -70,7 +71,9 @@ const Mypage = () => {
                 <TextContents>
                   {userData?.likedProblemIds?.length ? (
                     userData.likedProblemIds.map((id, index) => (
-                      <Text key={index}>문제 ID: {id}</Text>
+                      <Text key={index}>
+                        <Link to={`/problem/${id}`}>문제 ID: {id}</Link>
+                      </Text>
                     ))
                   ) : (
                     <Text>즐겨찾는 문제가 없습니다.</Text>
