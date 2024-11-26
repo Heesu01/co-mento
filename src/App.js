@@ -30,7 +30,7 @@ function App() {
           <Route path="/problem/:problemId" element={<Problem />} />
           <Route path="/problemlist" element={<ProblemList />} />
           <Route path="/rank" element={<Rank />} />
-          <Route path="/review" element={<Review />} />
+          <Route path="/review/:problemId" element={<Review />} />
           <Route path="/fail" element={<Fail />} />
           <Route path="/submit/:problemId" element={<Submit />} />
           <Route path="/book" element={<ProblemBook />} />
