@@ -32,7 +32,7 @@ function App() {
           <Route path="/rank" element={<Rank />} />
           <Route path="/review" element={<Review />} />
           <Route path="/fail" element={<Fail />} />
-          <Route path="/submit" element={<Submit />} />
+          <Route path="/submit/:problemId" element={<Submit />} />
           <Route path="/book" element={<ProblemBook />} />
           <Route path="/mycodelist/:userProfileId" element={<MycodeList />} />
         </Routes>

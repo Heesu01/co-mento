@@ -1,20 +1,28 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import Button from "../components/Button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Select from "react-select";
+import { Axios } from "../api/Api";
 
 const Submit = () => {
   const [selected, setSelected] = useState("");
+  const [code, setCode] = useState("");
   const navigate = useNavigate();
+  const { problemId } = useParams();
 
   const options = [
-    { value: "파이썬", label: "파이썬" },
-    { value: "자바", label: "자바" },
-    { value: "C언어", label: "C언어" },
+    { value: "python", label: "파이썬" },
+    { value: "java", label: "자바" },
+    { value: "c", label: "C언어" },
+    { value: "c#", label: "C#" },
+    { value: "c++", label: "C++" },
+    { value: "kotlin", label: "코틀린" },
+    { value: "javascript", label: "자바스크립트" },
+    { value: "r", label: "R" },
+    { value: "php", label: "php" },
+    { value: "go", label: "go" },
   ];
-
-  console.log("select: ", selected);
 
   const customStyles = {
     control: (base) => ({
@@ -47,6 +55,44 @@ const Submit = () => {
     else setSelected("");
   };
 
+  const handleCodeChange = (e) => {
+    setCode(e.target.value);
+  };
+
+  const handleSubmit = async () => {
+    if (!selected || !code.trim()) {
+      alert("언어와 코드를 모두 입력해주세요.");
+      return;
+    }
+
+    if (!problemId || isNaN(Number(problemId))) {
+      alert("유효한 문제 ID가 없습니다.");
+      return;
+    }
+
+    const requestBody = {
+      language: selected,
+      code: code.trim(),
+    };
+
+    try {
+      const response = await Axios.post(
+        `/problems/${Number(problemId)}`,
+        requestBody
+      );
+      console.log("Response:", response.data);
+
+      if (response.data.success) {
+        navigate(`/review/${Number(problemId)}`, { state: response.data.data });
+      } else {
+        alert(response.data.message || "제출 중 오류가 발생했습니다.");
+      }
+    } catch (error) {
+      console.error("Error submitting code:", error);
+      alert("코드 제출에 실패했습니다. 다시 시도해주세요.");
+    }
+  };
+
   return (
     <Container>
       <CautionBox>
@@ -59,7 +105,7 @@ const Submit = () => {
       </CautionBox>
       <InputBox>
         <TopBox>
-          <p># 1393 음하철도 구팔팔</p>
+          <p># {problemId || "문제 ID를 확인할 수 없습니다."}</p>
           <Select
             onChange={onChangeSelect}
             options={options}
@@ -70,7 +116,11 @@ const Submit = () => {
         <CodeBox>
           <p>소스코드</p>
           <InputCodeBox>
-            <InputCode placeholder="코드를 입력해주세요" />
+            <InputCode
+              placeholder="코드를 입력해주세요"
+              value={code}
+              onChange={handleCodeChange}
+            />
           </InputCodeBox>
         </CodeBox>
       </InputBox>
@@ -82,7 +132,7 @@ const Submit = () => {
         />
         <Button
           children="제출하기"
-          onClick={() => navigate(`/review`)}
+          onClick={handleSubmit}
           bgc={({ theme }) => theme.colors.deepPink}
           hoverColor={({ theme }) => theme.colors.pink}
         />
