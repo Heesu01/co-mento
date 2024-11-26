@@ -1,27 +1,71 @@
 import React, { useEffect, useState, useCallback } from "react";
 import styled from "styled-components";
-import { FaRegHeart } from "react-icons/fa";
+import { FaRegHeart, FaHeart } from 'react-icons/fa';
 import Button from "../components/Button";
 import { useNavigate, useParams } from "react-router-dom";
 import { Axios } from "../api/Api";
+
 
 const Problem = () => {
   const navigate = useNavigate();
   const { problemId } = useParams();
   const [problemData, setProblemData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLiked, setIsLiked] = useState(false);
+  const [likedProblemIds, setLikedProblemIds] = useState([]);
+
+  const toggleHeart = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        alert("로그인이 필요합니다.");
+        return;
+      }
+
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      if (isLiked) {
+        await Axios.delete(`/problems/${problemId}/like`, config);
+        setIsLiked(false); 
+        setLikedProblemIds(likedProblemIds.filter(id => id !== problemId));
+        console.log("좋아요 삭제되었습니다.")
+      } else {
+        await Axios.post(`/problems/${problemId}/like`, {}, config);
+        setIsLiked(true); 
+        setLikedProblemIds([...likedProblemIds, problemId]);
+        console.log("좋아요 추가되었습니다.")
+      }
+    } catch (error) {
+      console.error("좋아요 상태 변경 중 오류 발생:", error);
+      alert("좋아요 상태 변경에 실패했습니다.");
+    }
+  };
 
   const fetchProblem = useCallback(async () => {
     try {
       setIsLoading(true);
-      const response = await Axios.get(`/problems/${problemId}`);
-      setProblemData(response.data.data);
+      const response = await Axios.get(`/problems/${problemId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      
+      const problemData = response.data.data;
+      setProblemData(problemData);
+      setIsLiked(problemData.hasLiked);
+  
     } catch (error) {
       console.error("문제 조회 중 오류 발생:", error);
     } finally {
       setIsLoading(false);
     }
   }, [problemId]);
+  
+
 
   useEffect(() => {
     fetchProblem();
@@ -42,8 +86,8 @@ const Problem = () => {
         <Name>
           <span>{problemData.title}</span>
         </Name>
-        <Like>
-          <FaRegHeart />
+        <Like onClick={toggleHeart}>
+          {isLiked ? <FaHeart color="red" /> : <FaRegHeart />}
         </Like>
       </TopBox>
       <StatisticsBox>
@@ -154,6 +198,7 @@ const Name = styled.div`
   font-size: 30px;
 `;
 const Like = styled.div`
+  font-size: 25px;
   cursor: pointer;
 `;
 const StatisticsBox = styled.div`
