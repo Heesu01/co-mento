@@ -3,12 +3,17 @@ import styled from "styled-components";
 import { fetchUserProfile } from "../api/UserApi";
 import { useParams, useNavigate } from "react-router-dom";
 import { Link } from 'react-router-dom';
+import { Axios } from "../api/Api";
 
 const Mypage = () => {
   const { userProfileId } = useParams();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("myActivity");
   const [userData, setUserData] = useState(null);
+  const [activeTab, setActiveTab] = useState("myActivity");
+  const [likedProblemTitles, setLikedProblemTitles] = useState([]);
+  const [solvedProblemTitles, setSolvedProblemTitles] = useState([]);
+  const [failedProblemTitles, setFailedProblemTitles] = useState([]);
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -19,6 +24,48 @@ const Mypage = () => {
         }
         const response = await fetchUserProfile(userProfileId);
         setUserData(response.data);
+        
+        // 유저가 좋아요한 문제 ID 목록
+        const likedProblemIds = response.data.likedProblemIds;
+        const solvedProblemIds = response.data.solvedProblemIds;
+        const failedProblemIds = response.data.failedProblemIds;
+
+        // 문제 제목을 비동기로 가져오기
+        const problemTitles = await Promise.all(
+          likedProblemIds.map(async (id) => {
+            const response = await Axios.get(`/problems/${id}`, {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            });
+            return { id, title: response.data.data.title };
+          })
+        );
+        setLikedProblemTitles(problemTitles);
+
+        const solvedProblems = await Promise.all(
+          solvedProblemIds.map(async (id) => {
+            const response = await Axios.get(`/problems/${id}`, {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            });
+            return { id, title: response.data.data.title };
+          })
+        );
+        setSolvedProblemTitles(solvedProblems);
+
+        const failedProblems = await Promise.all(
+          failedProblemIds.map(async (id) => {
+            const response = await Axios.get(`/problems/${id}`, {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            });
+            return { id, title: response.data.data.title };
+          })
+        );
+        setFailedProblemTitles(failedProblems);
       } catch (error) {
         console.error("유저 데이터를 불러오지 못했습니다:", error);
       }
@@ -28,12 +75,13 @@ const Mypage = () => {
   }, [userProfileId]);
 
   const handleTabClick = (tab) => {
-    setActiveTab(tab);
+    setActiveTab(tab); // 탭 클릭 시 activeTab을 변경
   };
 
   const handleSubmittedListClick = () => {
     navigate(`/mycodelist/${userProfileId}`);
   };
+
 
   return (
     <Container>
@@ -52,13 +100,6 @@ const Mypage = () => {
               나의활동
             </Button>
 
-            <Button
-              active={activeTab === "accountManagement"}
-              onClick={() => handleTabClick("accountManagement")}
-            >
-              계정관리
-            </Button>
-
             <Button onClick={handleSubmittedListClick}>제출한 목록보기</Button>
           </ButtonContainer>
         </MyAccount>
@@ -70,9 +111,9 @@ const Mypage = () => {
                 <TextTitle>즐겨찾는 문제</TextTitle>
                 <TextContents>
                   {userData?.likedProblemIds?.length ? (
-                    userData.likedProblemIds.map((id, index) => (
+                    likedProblemTitles.map(({ id, title }, index) => (
                       <Text key={index}>
-                        <Link to={`/problem/${id}`}>문제 ID: {id}</Link>
+                        <Link to={`/problem/${id}`}>#{id} {title}</Link>
                       </Text>
                     ))
                   ) : (
@@ -84,39 +125,33 @@ const Mypage = () => {
               <ProblemBox>
                 <TextTitle>맞은 문제</TextTitle>
                 <TextContents>
-                  {userData?.solvedProblemIds?.length ? (
-                    userData.solvedProblemIds.map((id, index) => (
-                      <Text key={index}>문제 ID: {id}</Text>
-                    ))
-                  ) : (
-                    <Text>맞은 문제가 없습니다.</Text>
-                  )}
+                  {solvedProblemTitles.length ? (
+                      solvedProblemTitles.map((problem, index) => (
+                        <Text key={index}>
+                          <Link to={`/problem/${problem.id}`}>
+                            #{problem.id} {problem.title}
+                          </Link>
+                        </Text>
+                      ))
+                    ) : (
+                      <Text>맞은 문제가 없습니다.</Text>
+                    )}
                 </TextContents>
               </ProblemBox>
-
               <ProblemBox>
                 <TextTitle>틀린 문제</TextTitle>
                 <TextContents>
-                  {userData?.failedProblemIds?.length ? (
-                    userData.failedProblemIds.map((id, index) => (
-                      <Text key={index}>문제 ID: {id}</Text>
+                  {failedProblemTitles.length ? (
+                    failedProblemTitles.map((problem, index) => (
+                      <Text key={index}>
+                        <Link to={`/problem/${problem.id}`}>
+                          #{problem.id} {problem.title}
+                        </Link>
+                      </Text>
                     ))
                   ) : (
                     <Text>틀린 문제가 없습니다.</Text>
                   )}
-                </TextContents>
-              </ProblemBox>
-            </MyWorks>
-          )}
-
-          {activeTab === "accountManagement" && (
-            <MyWorks>
-              <ProblemBox>
-                <TextTitle>계정 정보</TextTitle>
-                <TextContents>
-                  <Text>유저이름: {userData?.name || "유저이름"}</Text>
-                  <Text>이메일: example@example.com</Text>
-                  {/* 이메일 정보는 받아오는 데이터에 추가 필요 */}
                 </TextContents>
               </ProblemBox>
             </MyWorks>
