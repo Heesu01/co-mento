@@ -115,10 +115,10 @@ const ExperienceValue = styled.div`
   font-weight: bold;
   color: ${(props) => props.theme.colors.red};
 `;
-const Label = styled.div`
-  font-size: 16px;
-  color: ${(props) => props.theme.colors.white};
-`;
+// const Label = styled.div`
+//   font-size: 16px;
+//   color: ${(props) => props.theme.colors.white};
+// `;
 
 const CircleBox = styled.div`
   display: flex;
