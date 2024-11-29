@@ -82,10 +82,12 @@ const Submit = () => {
       );
       console.log("Response:", response.data);
 
-      if (response.data.correct) {
+      const { correct, id } = response.data.data;
+
+      if (correct) {
         navigate(`/review/${Number(problemId)}`, { state: response.data.data });
       } else {
-        navigate(`/fail/${Number(problemId)}`);
+        navigate(`/fail/${Number(problemId)}`, { state: { solutionId: id } }); // solutionId 전달
       }
     } catch (error) {
       console.error("Error submitting code:", error);

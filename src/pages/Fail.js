@@ -1,10 +1,54 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import Button from "../components/Button";
+import { Axios } from "../api/Api";
 
 const Fail = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { solutionId } = location.state || {};
+  const { problemId } = useParams();
+  const [problemData, setProblemData] = useState(null);
+  const [aiFeedback, setAiFeedback] = useState("");
+  const [loadingReview, setLoadingReview] = useState(false);
+
+  useEffect(() => {
+    const fetchProblemData = async () => {
+      try {
+        const response = await Axios.get(`/problems/${problemId}`);
+        setProblemData(response.data.data);
+      } catch (error) {
+        console.error("문제 데이터를 가져오는 중 오류 발생:", error);
+      }
+    };
+
+    fetchProblemData();
+  }, [problemId]);
+
+  const handleAiReview = async () => {
+    if (!solutionId) {
+      setAiFeedback("유효한 solution ID를 찾을 수 없습니다.");
+      return;
+    }
+
+    try {
+      setLoadingReview(true);
+      const response = await Axios.get(`/solutions/${solutionId}/ai-review`);
+      setAiFeedback(
+        response.data.data.aiFeedback || "AI 리뷰를 가져올 수 없습니다."
+      );
+    } catch (error) {
+      console.error("AI 리뷰 요청 중 오류 발생:", error);
+      setAiFeedback("AI 리뷰 요청 중 오류가 발생했습니다.");
+    } finally {
+      setLoadingReview(false);
+    }
+  };
+
+  if (!problemData) {
+    return <LoadingText>문제를 불러오는 중...</LoadingText>;
+  }
 
   return (
     <Container>
@@ -14,42 +58,39 @@ const Fail = () => {
 
       <BoxContainer>
         <ProblemBox>
-          <TextTitle>#1004 두 수 비교하기</TextTitle>
+          <TextTitle>{`# ${
+            problemData.title || "문제 제목을 불러올 수 없습니다."
+          }`}</TextTitle>
           <TextContents>
-            <p>
-              최백준은 음하철도 구구팔에 탔다. 문제는 구구팔의 기장인 조교
-              김재홍이 반쯤 미쳐서 열차를 멈추지 않는다는 것이다. 그래서
-              최백준은 달리고 있는 열차에서 뛰어내려야 한다. 그런데 뛰어내릴 때
-              정류장 까지 거리가 너무 멀면 마이 아플 수 있다. 그래서 철도가
-              정류장에 가장 많이 근접했을 때 뛰어내리고자 한다. 어디서
-              뛰어내려야 하는가?
-            </p>
+            <p>{problemData.content || "문제 설명이 없습니다."}</p>
           </TextContents>
         </ProblemBox>
         <AllExampleBox>
           <ExampleBox>
             <TextTitle>입력</TextTitle>
             <SmallContents>
-              <p>
-                첫번째 줄에는 xs와 ys가 주어진다. 이는 정류장의 위치가 (xs,
-                ys)임을 의미한다. 두번째 줄에는 xe, ye, dx, dy가 주어진다. 이는
-                현재 열차 위치가 (xe, ye)이고, 열차가 1초마다 x가 증가하는
-                방향으로 dx만큼, y가 증가하는 방향으로 dy만큼 이동함을 의미한다
-                주어지는 모든 수는 -100이상, 100이하의 정수이다.
-              </p>
+              <p>{problemData.inputExplain || "입력 설명이 없습니다."}</p>
             </SmallContents>
           </ExampleBox>
           <ExampleBox>
             <TextTitle>출력</TextTitle>
             <SmallContents>
-              <p>
-                최백준이 뛰어내릴 위치의 x좌표와 y좌표를 출력한다. 뛰어내릴
-                위치의 좌표가 항상 정수인 입력만 주어진다.
-              </p>
+              <p>{problemData.outputExplain || "출력 설명이 없습니다."}</p>
             </SmallContents>
           </ExampleBox>
         </AllExampleBox>
       </BoxContainer>
+
+      <ReviewBox>
+        <AiReviewSection>
+          <AiReviewButton onClick={handleAiReview} disabled={loadingReview}>
+            {loadingReview ? "AI 리뷰 요청 중..." : "AI 리뷰 요청"}
+          </AiReviewButton>
+          <AiReviewFeedback>
+            {aiFeedback || "AI 리뷰를 요청하세요."}
+          </AiReviewFeedback>
+        </AiReviewSection>
+      </ReviewBox>
 
       <BottomBox>
         <Button
@@ -58,10 +99,21 @@ const Fail = () => {
           hoverColor={({ theme }) => theme.colors.pink}
           onClick={() => navigate("/problem")}
         />
+        <Button
+          children="다시풀기"
+          bgc={({ theme }) => theme.colors.deepPink}
+          hoverColor={({ theme }) => theme.colors.pink}
+          onClick={() => navigate(`/submit/${problemId}`)}
+        />
       </BottomBox>
     </Container>
   );
 };
+
+const LoadingText = styled.div`
+  text-align: center;
+  font-size: 18px;
+`;
 
 const Container = styled.div`
   width: 80%;
@@ -109,7 +161,6 @@ const TextContents = styled.div`
 const AllExampleBox = styled.div`
   display: flex;
   width: 100%;
-  display: flex;
   justify-content: space-between;
   margin: 20px 0;
 `;
@@ -126,6 +177,47 @@ const SmallContents = styled.div`
   padding: 20px;
   min-height: 150px;
   margin-top: 20px;
+`;
+
+const ReviewBox = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+`;
+
+const AiReviewSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+`;
+
+const AiReviewButton = styled.button`
+  background-color: ${({ theme }) => theme.colors.blue};
+  color: ${({ theme }) => theme.colors.white};
+  font-size: 16px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.darkBlue};
+  }
+  &:disabled {
+    background-color: ${({ theme }) => theme.colors.gray};
+    cursor: not-allowed;
+  }
+`;
+
+const AiReviewFeedback = styled.div`
+  margin-top: 10px;
+  padding: 10px;
+  background-color: ${({ theme }) => theme.colors.lightGray};
+  border-radius: 8px;
+  text-align: center;
+  font-size: 14px;
 `;
 
 const BottomBox = styled.div`
