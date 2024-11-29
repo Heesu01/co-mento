@@ -1,7 +1,40 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled, { keyframes } from "styled-components";
+import { fetchUserProfile, fetchCollectionProgress } from "../api/UserApi";
 
 const Mystate = () => {
+  const [experience, setExperience] = useState(0);
+  const [collectionProgresses, setCollectionProgresses] = useState([]);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const userProfileId = localStorage.getItem("userProfileId");
+        if (!userProfileId) {
+          console.error("userProfileId가 로컬스토리지에 없습니다.");
+          return;
+        }
+
+        const userProfile = await fetchUserProfile(userProfileId);
+        setExperience(userProfile.experience);
+      } catch (error) {
+        console.error("사용자 데이터를 가져오는 중 오류 발생:", error);
+      }
+    };
+
+    const fetchProgress = async () => {
+      try {
+        const progresses = await fetchCollectionProgress();
+        setCollectionProgresses(progresses);
+      } catch (error) {
+        console.error("문제집 진행도를 가져오는 중 오류 발생:", error);
+      }
+    };
+
+    fetchUserData();
+    fetchProgress();
+  }, []);
+
   return (
     <Container>
       <Top>
@@ -10,23 +43,20 @@ const Mystate = () => {
       </Top>
       <ItemBox>
         <Item>
-          <Title>레벨</Title>
-          <CircleBox>
-            <CircularProgressComponent percentage={30} />
-          </CircleBox>
+          <Title>경험치</Title>
+          <ExperienceBox>
+            <ExperienceValue>{experience}</ExperienceValue>
+            {/* <Label>랭킹</Label> */}
+          </ExperienceBox>
         </Item>
-        <Item>
-          <Title>진행률</Title>
-          <CircleBox>
-            <CircularProgressComponent percentage={60} />
-          </CircleBox>
-        </Item>
-        <Item>
-          <Title>진행률</Title>
-          <CircleBox>
-            <CircularProgressComponent percentage={80} />
-          </CircleBox>
-        </Item>
+        {collectionProgresses.map((collection) => (
+          <Item key={collection.id}>
+            <Title>{collection.name}</Title>
+            <CircleBox>
+              <CircularProgressComponent percentage={collection.progress} />
+            </CircleBox>
+          </Item>
+        ))}
       </ItemBox>
     </Container>
   );
@@ -51,12 +81,12 @@ const Top = styled.div`
 const ItemBox = styled.div`
   padding: 40px 0;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
 `;
 const Item = styled.div`
   background-color: ${(props) => props.theme.colors.black2};
-  width: 31%;
+  width: 30%;
   height: 200px;
   border-radius: 10px;
   padding: 20px;
@@ -68,7 +98,28 @@ const Item = styled.div`
 `;
 const Title = styled.div`
   color: ${(props) => props.theme.colors.white};
+  text-align: center;
+  margin-bottom: 10px;
+  font-weight: bold;
 `;
+const ExperienceBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 90%;
+  gap: 10px;
+`;
+const ExperienceValue = styled.div`
+  font-size: 40px;
+  font-weight: bold;
+  color: ${(props) => props.theme.colors.red};
+`;
+// const Label = styled.div`
+//   font-size: 16px;
+//   color: ${(props) => props.theme.colors.white};
+// `;
+
 const CircleBox = styled.div`
   display: flex;
   align-items: center;
