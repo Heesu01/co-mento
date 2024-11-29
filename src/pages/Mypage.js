@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { fetchUserProfile } from "../api/UserApi";
 import { useParams, useNavigate } from "react-router-dom";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import { Axios } from "../api/Api";
 
 const Mypage = () => {
@@ -14,7 +14,6 @@ const Mypage = () => {
   const [solvedProblemTitles, setSolvedProblemTitles] = useState([]);
   const [failedProblemTitles, setFailedProblemTitles] = useState([]);
 
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -24,20 +23,14 @@ const Mypage = () => {
         }
         const response = await fetchUserProfile(userProfileId);
         setUserData(response.data);
-        
-        // 유저가 좋아요한 문제 ID 목록
+
         const likedProblemIds = response.data.likedProblemIds;
         const solvedProblemIds = response.data.solvedProblemIds;
         const failedProblemIds = response.data.failedProblemIds;
 
-        // 문제 제목을 비동기로 가져오기
         const problemTitles = await Promise.all(
           likedProblemIds.map(async (id) => {
-            const response = await Axios.get(`/problems/${id}`, {
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-              },
-            });
+            const response = await Axios.get(`/problems/${id}`);
             return { id, title: response.data.data.title };
           })
         );
@@ -45,11 +38,7 @@ const Mypage = () => {
 
         const solvedProblems = await Promise.all(
           solvedProblemIds.map(async (id) => {
-            const response = await Axios.get(`/problems/${id}`, {
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-              },
-            });
+            const response = await Axios.get(`/problems/${id}`);
             return { id, title: response.data.data.title };
           })
         );
@@ -57,11 +46,7 @@ const Mypage = () => {
 
         const failedProblems = await Promise.all(
           failedProblemIds.map(async (id) => {
-            const response = await Axios.get(`/problems/${id}`, {
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-              },
-            });
+            const response = await Axios.get(`/problems/${id}`);
             return { id, title: response.data.data.title };
           })
         );
@@ -75,13 +60,12 @@ const Mypage = () => {
   }, [userProfileId]);
 
   const handleTabClick = (tab) => {
-    setActiveTab(tab); // 탭 클릭 시 activeTab을 변경
+    setActiveTab(tab);
   };
 
   const handleSubmittedListClick = () => {
     navigate(`/mycodelist/${userProfileId}`);
   };
-
 
   return (
     <Container>
@@ -99,7 +83,6 @@ const Mypage = () => {
             >
               나의활동
             </Button>
-
             <Button onClick={handleSubmittedListClick}>제출한 목록보기</Button>
           </ButtonContainer>
         </MyAccount>
@@ -113,7 +96,9 @@ const Mypage = () => {
                   {userData?.likedProblemIds?.length ? (
                     likedProblemTitles.map(({ id, title }, index) => (
                       <Text key={index}>
-                        <Link to={`/problem/${id}`}>#{id} {title}</Link>
+                        <Link to={`/problem/${id}`}>
+                          #{id} {title}
+                        </Link>
                       </Text>
                     ))
                   ) : (
@@ -126,18 +111,19 @@ const Mypage = () => {
                 <TextTitle>맞은 문제</TextTitle>
                 <TextContents>
                   {solvedProblemTitles.length ? (
-                      solvedProblemTitles.map((problem, index) => (
-                        <Text key={index}>
-                          <Link to={`/problem/${problem.id}`}>
-                            #{problem.id} {problem.title}
-                          </Link>
-                        </Text>
-                      ))
-                    ) : (
-                      <Text>맞은 문제가 없습니다.</Text>
-                    )}
+                    solvedProblemTitles.map((problem, index) => (
+                      <Text key={index}>
+                        <Link to={`/problem/${problem.id}`}>
+                          #{problem.id} {problem.title}
+                        </Link>
+                      </Text>
+                    ))
+                  ) : (
+                    <Text>맞은 문제가 없습니다.</Text>
+                  )}
                 </TextContents>
               </ProblemBox>
+
               <ProblemBox>
                 <TextTitle>틀린 문제</TextTitle>
                 <TextContents>
