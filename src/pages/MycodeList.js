@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { useNavigate, useParams } from "react-router-dom";
 import { FaCheck } from "react-icons/fa";
 import { fetchUserSolutions } from "../api/UserApi";
+import Pagination from "../components/Pagination";
 
 const MycodeList = () => {
   const { userProfileId } = useParams();
@@ -10,12 +11,14 @@ const MycodeList = () => {
   const problemsPerPage = 5;
   const [currentPage, setCurrentPage] = useState(1);
   const [problems, setProblems] = useState([]);
+  const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
     const loadProblems = async () => {
       try {
         const solutionList = await fetchUserSolutions(userProfileId);
         setProblems(solutionList);
+        setTotalPages(Math.ceil(solutionList.length / problemsPerPage));
       } catch (error) {
         console.error("제출문제 조회 에러:", error);
       }
@@ -31,7 +34,7 @@ const MycodeList = () => {
     indexOfLastProblem
   );
 
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const handlePageChange = (page) => setCurrentPage(page);
 
   return (
     <Container>
@@ -41,8 +44,6 @@ const MycodeList = () => {
           <ClassNum>문제 번호</ClassNum>
           <ClassTit>문제 제목</ClassTit>
           <ClassLang>사용 언어</ClassLang>
-          {/* <ClassMem>메모리</ClassMem>
-          <ClassTime>시간</ClassTime> */}
           <ClassStime>제출 시간</ClassStime>
           <ClassSub>제출자</ClassSub>
           <Check>결과</Check>
@@ -55,8 +56,6 @@ const MycodeList = () => {
             <ClassNum>{problem.num}</ClassNum>
             <ClassTit>{problem.title}</ClassTit>
             <ClassLang>{problem.language}</ClassLang>
-            {/* <ClassMem>{problem.memory}</ClassMem>
-            <ClassTime>{problem.time}</ClassTime> */}
             <ClassStime>{problem.subtime}</ClassStime>
             <ClassSub>{problem.submitter}</ClassSub>
             <Check>
@@ -66,20 +65,13 @@ const MycodeList = () => {
         ))}
       </ListBox>
 
-      <Pagination>
-        {Array.from(
-          { length: Math.ceil(problems.length / problemsPerPage) },
-          (_, i) => (
-            <PageButton
-              key={i + 1}
-              onClick={() => paginate(i + 1)}
-              active={currentPage === i + 1}
-            >
-              {i + 1}
-            </PageButton>
-          )
-        )}
-      </Pagination>
+      <PaginationContainer>
+        <Pagination
+          totalPages={totalPages}
+          currentPage={currentPage}
+          onPageChange={handlePageChange}
+        />
+      </PaginationContainer>
     </Container>
   );
 };
@@ -140,12 +132,6 @@ const ClassTit = styled.div`
 const ClassLang = styled.div`
   width: 10%;
 `;
-// const ClassMem = styled.div`
-//   width: 10%;
-// `;
-// const ClassTime = styled.div`
-//   width: 10%;
-// `;
 const ClassStime = styled.div`
   width: 20%;
 `;
@@ -160,28 +146,10 @@ const Check = styled.div`
   }
 `;
 
-const Pagination = styled.div`
+const PaginationContainer = styled.div`
   display: flex;
   justify-content: center;
   margin-top: 20px;
-  gap: 5px;
-`;
-
-const PageButton = styled.button`
-  padding: 8px 12px;
-  font-size: 16px;
-  font-weight: bold;
-  color: ${({ active, theme }) =>
-    active ? theme.colors.white : theme.colors.black};
-  background-color: ${({ active, theme }) =>
-    active ? theme.colors.red : "transparent"};
-  border-radius: 5px;
-  cursor: pointer;
-
-  &:hover {
-    background-color: ${({ theme }) => theme.colors.red};
-    color: ${({ theme }) => theme.colors.white};
-  }
 `;
 
 export default MycodeList;

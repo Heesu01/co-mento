@@ -82,6 +82,7 @@ const ProblemList = () => {
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
+
   const handleCategoryClick = (category) => {
     setInputAlgorithm(category.name);
     setSelectedCategoryId(category.id);
@@ -104,6 +105,12 @@ const ProblemList = () => {
     setSearchKeyword(e.target.value);
   };
 
+  const handleSearchKeyDown = (e) => {
+    if (e.key === "Enter") {
+      applyFilters();
+    }
+  };
+
   const applyFilters = () => {
     setFilters({
       selectedCategoryId,
@@ -124,7 +131,7 @@ const ProblemList = () => {
       selectedCategoryId: "",
       difficulty: "",
       successStatus: "",
-      searchKeyword: "",
+      searchKeyword,
     });
     setCurrentPage(1);
   };
@@ -144,11 +151,13 @@ const ProblemList = () => {
 
   return (
     <Container>
+      {/* <TopTitle>Co-Mento 문제목록</TopTitle> */}
       <SearchBox>
         <Input
-          placeholder="문제를 검색해주세요."
+          placeholder="문제 제목을 검색해주세요."
           value={searchKeyword}
           onChange={handleKeywordChange}
+          onKeyDown={handleSearchKeyDown}
         />
         <SearchBtn onClick={applyFilters}>검색</SearchBtn>
       </SearchBox>
@@ -257,9 +266,16 @@ const ProblemList = () => {
   );
 };
 
+// const TopTitle = styled.h2`
+//   text-align: center;
+//   font-size: 28px;
+//   font-weight: bold;
+//   margin-bottom: 20px;
+// `;
+
 const Container = styled.div`
   width: 80%;
-  margin: 90px auto;
+  margin: 60px auto;
   display: flex;
   flex-direction: column;
   gap: 20px;

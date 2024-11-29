@@ -1,10 +1,9 @@
 import React, { useEffect, useState, useCallback } from "react";
 import styled from "styled-components";
-import { FaRegHeart, FaHeart } from 'react-icons/fa';
+import { FaRegHeart, FaHeart } from "react-icons/fa";
 import Button from "../components/Button";
 import { useNavigate, useParams } from "react-router-dom";
 import { Axios } from "../api/Api";
-
 
 const Problem = () => {
   const navigate = useNavigate();
@@ -30,14 +29,14 @@ const Problem = () => {
 
       if (isLiked) {
         await Axios.delete(`/problems/${problemId}/like`, config);
-        setIsLiked(false); 
-        setLikedProblemIds(likedProblemIds.filter(id => id !== problemId));
-        console.log("좋아요 삭제되었습니다.")
+        setIsLiked(false);
+        setLikedProblemIds(likedProblemIds.filter((id) => id !== problemId));
+        console.log("좋아요 삭제되었습니다.");
       } else {
         await Axios.post(`/problems/${problemId}/like`, {}, config);
-        setIsLiked(true); 
+        setIsLiked(true);
         setLikedProblemIds([...likedProblemIds, problemId]);
-        console.log("좋아요 추가되었습니다.")
+        console.log("좋아요 추가되었습니다.");
       }
     } catch (error) {
       console.error("좋아요 상태 변경 중 오류 발생:", error);
@@ -53,19 +52,16 @@ const Problem = () => {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      
+
       const problemData = response.data.data;
       setProblemData(problemData);
       setIsLiked(problemData.hasLiked);
-  
     } catch (error) {
       console.error("문제 조회 중 오류 발생:", error);
     } finally {
       setIsLoading(false);
     }
   }, [problemId]);
-  
-
 
   useEffect(() => {
     fetchProblem();
@@ -151,7 +147,9 @@ const Problem = () => {
         </ExampleBox>
       </AllExampleBox>
       <BottomBox>
-        <Source>출처: {problemData.source}</Source>
+        <Source isHidden={!problemData.source}>
+          출처: {problemData.source || ""}
+        </Source>
         <Button
           children="문제풀기"
           bgc={({ theme }) => theme.colors.deepPink}
@@ -181,6 +179,7 @@ const Container = styled.div`
   flex-direction: column;
   gap: 20px;
 `;
+
 const TopBox = styled.div`
   display: flex;
   font-size: 24px;
@@ -190,22 +189,27 @@ const TopBox = styled.div`
   justify-content: space-between;
   align-items: center;
 `;
+
 const Num = styled.div`
   font-weight: 700;
 `;
+
 const Name = styled.div`
   font-weight: 500;
   font-size: 30px;
 `;
+
 const Like = styled.div`
   font-size: 25px;
   cursor: pointer;
 `;
+
 const StatisticsBox = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
 `;
+
 const Statistic = styled.div`
   display: flex;
   flex-direction: column;
@@ -214,6 +218,7 @@ const Statistic = styled.div`
   margin: 40px 0;
   gap: 8px;
 `;
+
 const TitleBox = styled.div`
   width: 100%;
   display: flex;
@@ -221,33 +226,40 @@ const TitleBox = styled.div`
   border-bottom: 1px solid ${({ theme }) => theme.colors.red};
   padding-bottom: 5px;
 `;
+
 const Title = styled.p`
   width: 80px;
   text-align: center;
 `;
+
 const InfoBox = styled.div`
   padding-top: 5px;
   width: 100%;
   display: flex;
   justify-content: space-between;
 `;
+
 const Info = styled.p`
   width: 80px;
   text-align: center;
 `;
+
 const BoxContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
   padding-top: 40px;
 `;
+
 const ProblemBox = styled.div``;
+
 const TextTitle = styled.p`
   margin-bottom: 15px;
   font-weight: 700;
   border-bottom: 2px solid ${({ theme }) => theme.colors.red};
   padding-bottom: 10px;
 `;
+
 const TextContents = styled.div`
   box-shadow: 0px 5px 5px -1px ${(props) => props.theme.colors.gray};
   border-radius: 10px;
@@ -256,15 +268,18 @@ const TextContents = styled.div`
   min-height: 150px;
   line-height: 1.3em;
 `;
+
 const AllExampleBox = styled.div`
   display: flex;
   width: 100%;
   justify-content: space-between;
   margin: 20px 0;
 `;
+
 const ExampleBox = styled.div`
   width: 42%;
 `;
+
 const SmallContents = styled.div`
   width: 100%;
   box-shadow: 0px 5px 5px -1px ${(props) => props.theme.colors.gray};
@@ -274,13 +289,16 @@ const SmallContents = styled.div`
   margin-top: 20px;
   line-height: 1.3em;
 `;
+
 const BottomBox = styled.div`
   display: flex;
   justify-content: space-between;
 `;
+
 const Source = styled.div`
   margin-left: 10px;
-  color: ${(props) => props.theme.colors.gray};
+  color: ${(props) =>
+    props.isHidden ? props.theme.colors.white : props.theme.colors.gray};
 `;
 
 export default Problem;
