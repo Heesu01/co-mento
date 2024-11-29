@@ -83,7 +83,7 @@ const ProblemBook = () => {
   return (
     <Container>
       <Header>
-        <h2>코딩 문제집</h2>
+        <h2>Co-Mento 문제집</h2>
         <p>다양한 알고리즘 문제를 풀고 실력을 키워보세요!</p>
       </Header>
       <SelectContainer>
