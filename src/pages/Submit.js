@@ -8,6 +8,7 @@ import { Axios } from "../api/Api";
 const Submit = () => {
   const [selected, setSelected] = useState("");
   const [code, setCode] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { problemId } = useParams();
 
@@ -76,70 +77,84 @@ const Submit = () => {
     };
 
     try {
+      setLoading(true);
       const response = await Axios.post(
         `/problems/${Number(problemId)}`,
         requestBody
       );
-      console.log("Response:", response.data);
 
+      console.log("Response:", response.data);
       const { correct, id } = response.data.data;
 
       if (correct) {
         navigate(`/review/${Number(problemId)}`, { state: response.data.data });
       } else {
-        navigate(`/fail/${Number(problemId)}`, { state: { solutionId: id } }); // solutionId 전달
+        navigate(`/fail/${Number(problemId)}`, { state: { solutionId: id } });
       }
     } catch (error) {
       console.error("Error submitting code:", error);
       alert("코드 제출에 실패했습니다. 다시 시도해주세요.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <Container>
-      <CautionBox>
-        <p>
-          <span>! 주의사항</span>
-          <br />
-          C++ -&gt; int main()으로 작성해주세요 <br />
-          JAVA -&gt; 클래스 이름을 반드시 Main으로 작성해주세요
-        </p>
-      </CautionBox>
-      <InputBox>
-        <TopBox>
-          <p># {problemId || "문제 ID를 확인할 수 없습니다."}</p>
-          <Select
-            onChange={onChangeSelect}
-            options={options}
-            placeholder="언어 선택"
-            styles={customStyles}
-          />
-        </TopBox>
-        <CodeBox>
-          <p>소스코드</p>
-          <InputCodeBox>
-            <InputCode
-              placeholder="코드를 입력해주세요"
-              value={code}
-              onChange={handleCodeChange}
+    <>
+      {loading && (
+        <LoadingOverlay>
+          <LoadingContent>
+            <Spinner />
+            <LoadingText>제출 중입니다...</LoadingText>
+          </LoadingContent>
+        </LoadingOverlay>
+      )}
+      <Container>
+        <CautionBox>
+          <p>
+            <span>! 주의사항</span>
+            <br />
+            C++ -&gt; int main()으로 작성해주세요 <br />
+            JAVA -&gt; 클래스 이름을 반드시 Main으로 작성해주세요
+          </p>
+        </CautionBox>
+        <InputBox>
+          <TopBox>
+            <p># {problemId || "문제 ID를 확인할 수 없습니다."}</p>
+            <Select
+              onChange={onChangeSelect}
+              options={options}
+              placeholder="언어 선택"
+              styles={customStyles}
             />
-          </InputCodeBox>
-        </CodeBox>
-      </InputBox>
-      <BtnBox>
-        <Button
-          children="이전으로"
-          bgc={({ theme }) => theme.colors.beige2}
-          onClick={() => navigate(-1)}
-        />
-        <Button
-          children="제출하기"
-          onClick={handleSubmit}
-          bgc={({ theme }) => theme.colors.deepPink}
-          hoverColor={({ theme }) => theme.colors.pink}
-        />
-      </BtnBox>
-    </Container>
+          </TopBox>
+          <CodeBox>
+            <p>소스코드</p>
+            <InputCodeBox>
+              <InputCode
+                placeholder="코드를 입력해주세요"
+                value={code}
+                onChange={handleCodeChange}
+              />
+            </InputCodeBox>
+          </CodeBox>
+        </InputBox>
+        <BtnBox>
+          <Button
+            children="문제로"
+            bgc={({ theme }) => theme.colors.beige2}
+            onClick={() => navigate(`/problem/${problemId}`)}
+          />
+          <Button
+            children="제출하기"
+            onClick={handleSubmit}
+            bgc={({ theme }) => theme.colors.deepPink}
+            hoverColor={({ theme }) => theme.colors.pink}
+            disabled={loading}
+          />
+        </BtnBox>
+      </Container>
+    </>
   );
 };
 
@@ -226,6 +241,50 @@ const BtnBox = styled.div`
   display: flex;
   justify-content: end;
   gap: 10px;
+`;
+
+const LoadingOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+`;
+
+const LoadingContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: ${({ theme }) => theme.colors.white};
+`;
+
+const Spinner = styled.div`
+  border: 6px solid ${({ theme }) => theme.colors.gray};
+  border-top: 6px solid ${({ theme }) => theme.colors.white};
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+`;
+
+const LoadingText = styled.p`
+  margin-top: 15px;
+  font-size: 18px;
+  font-weight: bold;
 `;
 
 export default Submit;
