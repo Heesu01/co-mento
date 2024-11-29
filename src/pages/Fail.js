@@ -12,6 +12,7 @@ const Fail = () => {
   const [problemData, setProblemData] = useState(null);
   const [aiFeedback, setAiFeedback] = useState("");
   const [loadingReview, setLoadingReview] = useState(false);
+  const [reviewRequested, setReviewRequested] = useState(false);
 
   useEffect(() => {
     const fetchProblemData = async () => {
@@ -43,6 +44,7 @@ const Fail = () => {
       setAiFeedback("AI 리뷰 요청 중 오류가 발생했습니다.");
     } finally {
       setLoadingReview(false);
+      setReviewRequested(true);
     }
   };
 
@@ -55,7 +57,6 @@ const Fail = () => {
       <FailureMessage>
         <p>틀렸습니다! 다시 제출해 주세요.</p>
       </FailureMessage>
-
       <BoxContainer>
         <ProblemBox>
           <TextTitle>{`# ${
@@ -80,24 +81,33 @@ const Fail = () => {
           </ExampleBox>
         </AllExampleBox>
       </BoxContainer>
-
       <ReviewBox>
         <AiReviewSection>
-          <AiReviewButton onClick={handleAiReview} disabled={loadingReview}>
-            {loadingReview ? "AI 리뷰 요청 중..." : "AI 리뷰 요청"}
+          <AiReviewButton
+            onClick={handleAiReview}
+            disabled={loadingReview || reviewRequested}
+          >
+            {loadingReview ? (
+              <AiLoadingSpinner />
+            ) : reviewRequested ? (
+              "AI 리뷰 결과"
+            ) : (
+              "AI 리뷰 요청"
+            )}
           </AiReviewButton>
           <AiReviewFeedback>
-            {aiFeedback || "AI 리뷰를 요청하세요."}
+            {aiFeedback ||
+              "AI 리뷰를 요청하시면 틀린 풀이의 이유와 개선 방향을 확인할 수 있습니다."}
           </AiReviewFeedback>
         </AiReviewSection>
       </ReviewBox>
-
+      ;
       <BottomBox>
         <Button
-          children="문제로 돌아가기"
+          children="문제목록으로 돌아가기"
           bgc={({ theme }) => theme.colors.pink}
           hoverColor={({ theme }) => theme.colors.pink}
-          onClick={() => navigate("/problem")}
+          onClick={() => navigate("/problemlist")}
         />
         <Button
           children="다시풀기"
@@ -184,7 +194,11 @@ const ReviewBox = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 20px;
+  padding: 20px;
+  background-color: ${({ theme }) => theme.colors.beige};
+  border-radius: 10px;
+  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
 `;
 
 const AiReviewSection = styled.div`
@@ -192,32 +206,66 @@ const AiReviewSection = styled.div`
   flex-direction: column;
   align-items: center;
   width: 100%;
+  text-align: center;
+  gap: 15px;
 `;
 
 const AiReviewButton = styled.button`
-  background-color: ${({ theme }) => theme.colors.blue};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: ${({ theme }) => theme.colors.pink};
   color: ${({ theme }) => theme.colors.white};
-  font-size: 16px;
-  padding: 10px 20px;
-  border-radius: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  padding: 12px 30px;
+  border-radius: 8px;
   border: none;
   cursor: pointer;
+  transition: background-color 0.3s;
+  width: 200px;
+
   &:hover {
-    background-color: ${({ theme }) => theme.colors.darkBlue};
+    background-color: ${({ theme }) => theme.colors.red};
   }
+
   &:disabled {
-    background-color: ${({ theme }) => theme.colors.gray};
-    cursor: not-allowed;
+    background-color: ${({ theme }) => theme.colors.beige};
+    cursor: auto;
+    color: ${({ theme }) => theme.colors.black};
   }
 `;
 
 const AiReviewFeedback = styled.div`
-  margin-top: 10px;
-  padding: 10px;
-  background-color: ${({ theme }) => theme.colors.lightGray};
-  border-radius: 8px;
-  text-align: center;
-  font-size: 14px;
+  width: 100%;
+  padding: 15px;
+  background-color: ${({ theme }) => theme.colors.white};
+  border: 2px solid ${({ theme }) => theme.colors.pink};
+  border-radius: 10px;
+  font-size: 16px;
+  color: ${({ theme }) => theme.colors.black};
+  text-align: left;
+  line-height: 1.5em;
+  word-wrap: break-word;
+  min-height: 50px;
+`;
+
+const AiLoadingSpinner = styled.div`
+  border: 4px solid ${({ theme }) => theme.colors.pink};
+  border-top: 4px solid ${({ theme }) => theme.colors.red};
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  animation: spin 0.8s linear infinite;
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
 `;
 
 const BottomBox = styled.div`
