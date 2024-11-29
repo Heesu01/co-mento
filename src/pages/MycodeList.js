@@ -8,37 +8,39 @@ import Pagination from "../components/Pagination";
 const MycodeList = () => {
   const { userProfileId } = useParams();
   const navigate = useNavigate();
-  const problemsPerPage = 5;
   const [currentPage, setCurrentPage] = useState(1);
   const [problems, setProblems] = useState([]);
   const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const loadProblems = async () => {
       try {
-        const solutionList = await fetchUserSolutions(userProfileId);
-        setProblems(solutionList);
-        setTotalPages(Math.ceil(solutionList.length / problemsPerPage));
+        setLoading(true);
+        const { solutions, totalPages } = await fetchUserSolutions(
+          userProfileId,
+          currentPage
+        );
+        setProblems(solutions);
+        setTotalPages(totalPages);
       } catch (error) {
         console.error("제출문제 조회 에러:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
     loadProblems();
-  }, [userProfileId]);
-
-  const indexOfLastProblem = currentPage * problemsPerPage;
-  const indexOfFirstProblem = indexOfLastProblem - problemsPerPage;
-  const currentProblems = problems.slice(
-    indexOfFirstProblem,
-    indexOfLastProblem
-  );
+  }, [userProfileId, currentPage]);
 
   const handlePageChange = (page) => setCurrentPage(page);
 
+  if (loading) return <p>제출코드를 불러오고 있습니다...</p>;
+  if (!problems.length) return <p>제출된 코드가 없습니다.</p>;
+
   return (
     <Container>
-      <ListBoxTitle>내가 제출한 코드</ListBoxTitle>
+      <ListBoxTitle>제출 코드 목록</ListBoxTitle>
       <ListBox>
         <Top>
           <ClassNum>문제 번호</ClassNum>
@@ -48,7 +50,7 @@ const MycodeList = () => {
           <ClassSub>제출자</ClassSub>
           <Check>결과</Check>
         </Top>
-        {currentProblems.map((problem) => (
+        {problems.map((problem) => (
           <Item
             key={problem.solutionId}
             onClick={() => navigate(`/mycode/${problem.solutionId}`)}
@@ -94,6 +96,7 @@ const ListBox = styled.div`
   width: 100%;
   height: auto;
   padding: 35px;
+  padding-bottom: 0px;
 `;
 
 const Top = styled.div`
@@ -149,7 +152,6 @@ const Check = styled.div`
 const PaginationContainer = styled.div`
   display: flex;
   justify-content: center;
-  margin-top: 20px;
 `;
 
 export default MycodeList;
