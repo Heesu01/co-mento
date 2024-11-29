@@ -82,10 +82,10 @@ const Submit = () => {
       );
       console.log("Response:", response.data);
 
-      if (response.data.success) {
+      if (response.data.correct) {
         navigate(`/review/${Number(problemId)}`, { state: response.data.data });
       } else {
-        alert(response.data.message || "제출 중 오류가 발생했습니다.");
+        navigate(`/fail/${Number(problemId)}`);
       }
     } catch (error) {
       console.error("Error submitting code:", error);

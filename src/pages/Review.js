@@ -13,7 +13,7 @@ const Review = () => {
   const [showAIReview, setShowAIReview] = useState(false);
 
   const submissionData = location.state || {};
-  const { code, aiFeedback, correct } = submissionData;
+  const { code, aiFeedback } = submissionData;
 
   useEffect(() => {
     const fetchProblemData = async () => {
@@ -38,9 +38,7 @@ const Review = () => {
 
   return (
     <Container>
-      <Message>
-        {correct ? "맞았습니다!" : "틀렸습니다."} AI리뷰를 확인하세요.
-      </Message>
+      <Message>맞았습니다. AI리뷰를 확인하세요.</Message>
       <BoxContainer>
         <ProblemBox>
           <TextTitle>{`# ${
