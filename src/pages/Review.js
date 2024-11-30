@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 import styled from "styled-components";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import Button from "../components/Button";
 import AiIcon from "../assets/ai.svg";
 import { Axios } from "../api/Api";
@@ -93,17 +97,41 @@ const Review = () => {
           )}
 
           {showAIReview && (
-            <Feedback>{aiFeedback || "AI 리뷰를 불러올 수 없습니다."}</Feedback>
+            <Feedback>
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                components={{
+                  code({ node, inline, className, children, ...props }) {
+                    const match = /language-(\w+)/.exec(className || "");
+                    return !inline && match ? (
+                      <SyntaxHighlighter
+                        style={vscDarkPlus}
+                        language={match[1]}
+                        PreTag="div"
+                        {...props}
+                      >
+                        {String(children).replace(/\n$/, "")}
+                      </SyntaxHighlighter>
+                    ) : (
+                      <code className={className} {...props}>
+                        {children}
+                      </code>
+                    );
+                  },
+                }}
+              >
+                {aiFeedback || "AI 리뷰를 불러올 수 없습니다."}
+              </ReactMarkdown>
+            </Feedback>
           )}
         </AI>
       </ReviewBox>
       <BottomBox>
-        {/* <Source>출처: {problemData.source || "출처 정보가 없습니다."}</Source> */}
         <Button
-          children="문제로"
+          children="문제목록으로"
           bgc={({ theme }) => theme.colors.beige2}
           hoverColor={({ theme }) => theme.colors.beige2}
-          onClick={() => navigate(`/problem`)}
+          onClick={() => navigate(`/problemlist`)}
         />
         <Button
           children="다시풀기"

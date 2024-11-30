@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import styled from "styled-components";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import rehypeRaw from "rehype-raw";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import Button from "../components/Button";
 import { Axios } from "../api/Api";
 
@@ -52,6 +57,26 @@ const Fail = () => {
     return <LoadingText>문제를 불러오는 중...</LoadingText>;
   }
 
+  const MarkdownComponents = {
+    code({ node, inline, className, children, ...props }) {
+      const match = /language-(\w+)/.exec(className || "");
+      return !inline && match ? (
+        <SyntaxHighlighter
+          style={vscDarkPlus}
+          language={match[1]}
+          PreTag="div"
+          {...props}
+        >
+          {String(children).replace(/\n$/, "")}
+        </SyntaxHighlighter>
+      ) : (
+        <code className={className} {...props}>
+          {children}
+        </code>
+      );
+    },
+  };
+
   return (
     <Container>
       <FailureMessage>
@@ -96,12 +121,20 @@ const Fail = () => {
             )}
           </AiReviewButton>
           <AiReviewFeedback>
-            {aiFeedback ||
-              "AI 리뷰를 요청하시면 틀린 풀이의 이유와 개선 방향을 확인할 수 있습니다."}
+            {aiFeedback ? (
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                rehypePlugins={[rehypeRaw]}
+                components={MarkdownComponents}
+              >
+                {aiFeedback}
+              </ReactMarkdown>
+            ) : (
+              "AI 리뷰를 요청하시면 틀린 풀이의 이유와 개선 방향을 확인할 수 있습니다."
+            )}
           </AiReviewFeedback>
         </AiReviewSection>
       </ReviewBox>
-      ;
       <BottomBox>
         <Button
           children="문제목록으로 돌아가기"
@@ -132,6 +165,7 @@ const Container = styled.div`
   flex-direction: column;
   gap: 20px;
 `;
+
 const FailureMessage = styled.div`
   background-color: ${({ theme }) => theme.colors.red};
   color: ${({ theme }) => theme.colors.white};
@@ -142,6 +176,7 @@ const FailureMessage = styled.div`
   border-radius: 15px;
   box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.1);
 `;
+
 const BoxContainer = styled.div`
   display: flex;
   flex-direction: column;
