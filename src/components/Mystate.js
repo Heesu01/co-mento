@@ -5,6 +5,7 @@ import { fetchUserProfile, fetchCollectionProgress } from "../api/UserApi";
 const Mystate = () => {
   const [experience, setExperience] = useState(0);
   const [collectionProgresses, setCollectionProgresses] = useState([]);
+  const [ranking, setRanking] = useState(0);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -16,7 +17,8 @@ const Mystate = () => {
         }
 
         const userProfile = await fetchUserProfile(userProfileId);
-        setExperience(userProfile.experience);
+        setExperience(userProfile.data.experience);
+        setRanking(userProfile.data.ranking);
       } catch (error) {
         console.error("사용자 데이터를 가져오는 중 오류 발생:", error);
       }
@@ -46,7 +48,7 @@ const Mystate = () => {
           <Title>경험치</Title>
           <ExperienceBox>
             <ExperienceValue>{experience}</ExperienceValue>
-            {/* <Label>랭킹</Label> */}
+            <Label>Co-Mento 랭킹 {ranking}위</Label>
           </ExperienceBox>
         </Item>
         {collectionProgresses.map((collection) => (
@@ -115,10 +117,12 @@ const ExperienceValue = styled.div`
   font-weight: bold;
   color: ${(props) => props.theme.colors.red};
 `;
-// const Label = styled.div`
-//   font-size: 16px;
-//   color: ${(props) => props.theme.colors.white};
-// `;
+
+const Label = styled.div`
+  margin-top: 10px;
+  font-size: 16px;
+  color: ${(props) => props.theme.colors.white};
+`;
 
 const CircleBox = styled.div`
   display: flex;
