@@ -310,11 +310,11 @@ const AlgorithmInputBox = styled.input`
   padding: 5px 10px;
   outline: none;
   border: 1px solid ${({ theme }) => theme.colors.gray2};
-  margin-top: 10px;
+  margin-top: 10px;position: relative;
   cursor: pointer;
 `;
-const ChoseBox = styled.div`
-  width: 100%;
+const ChoseBox = styled.div` 
+  width: 75.2%;
   max-height: 130px;
   overflow-y: auto;
   background-color: white;
@@ -413,7 +413,7 @@ const ResetBtn = styled.button`
 `;
 const ListBox = styled.div`
   width: 100%;
-  height: 800px;
+  height: 500px;
   border: 1px solid ${({ theme }) => theme.colors.gray2};
   padding: 35px;
 `;
