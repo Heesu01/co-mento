@@ -6,7 +6,7 @@ const getCookie = (name) => {
   const cookieValue = document.cookie
     .split("; ")
     .find((row) => row.startsWith(`${name}=`));
-  return cookieValue ? cookieValue.split("=")[1] : null;
+  return cookieValue ? decodeURIComponent(cookieValue.split("=")[1]) : null; // 디코딩된 값 반환
 };
 
 export const AuthProvider = ({ children }) => {
@@ -14,20 +14,16 @@ export const AuthProvider = ({ children }) => {
 
   const checkLoginStatus = () => {
     const accessToken = getCookie("AccessToken");
-    const userProfileIdFromCookie = getCookie("userProfileId");
-    const userProfileIdFromStorage = localStorage.getItem("userProfileId");
+    const userProfileId = getCookie("userProfileId");
 
-    // 네이버 로그인 (쿠키 기반)
-    if (accessToken && userProfileIdFromCookie) {
-      localStorage.setItem("userProfileId", userProfileIdFromCookie);
+    if (accessToken || userProfileId) {
+      console.log("AccessToken:", accessToken);
+      console.log("userProfileId:", userProfileId);
+
+      localStorage.setItem("userProfileId", userProfileId);
       setIsLoggedIn(true);
-    }
-    // 일반 로그인 (로컬스토리지 기반)
-    else if (userProfileIdFromStorage) {
-      setIsLoggedIn(true);
-    }
-    // 로그아웃 상태
-    else {
+    } else {
+      console.log("Not logged in");
       setIsLoggedIn(false);
     }
   };
