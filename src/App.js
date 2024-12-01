@@ -15,7 +15,6 @@ import Fail from "./pages/Fail";
 import ProblemBook from "./pages/ProblemBook";
 import { AuthProvider } from "./context/AuthContext";
 import MycodeList from "./pages/MycodeList";
-import NaverRedirect from "./components/NaverRedirect";
 
 function App() {
   return (
@@ -25,7 +24,6 @@ function App() {
           <Route path="/" element={<Navigate to="/main" />} />
           <Route path="/main" element={<Main />} />
           <Route path="/auth/login" element={<Login />} />
-          <Route path="/auth/redirect/naver" element={<NaverRedirect />} />
           <Route path="/auth/join" element={<Join />} />
           <Route path="/mycode/:solutionId" element={<Mycode />} />
           <Route path="/mypage/:userProfileId" element={<Mypage />} />
