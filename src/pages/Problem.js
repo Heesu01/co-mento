@@ -68,7 +68,12 @@ const Problem = () => {
   }, [fetchProblem]);
 
   if (isLoading) {
-    return <LoadingText>Loading...</LoadingText>;
+    return (
+      <LoadingContainer>
+        <LoadingSpinner />
+        <LoadingText>문제를 불러오는 중입니다...</LoadingText>
+      </LoadingContainer>
+    );
   }
 
   if (!problemData) {
@@ -161,9 +166,36 @@ const Problem = () => {
   );
 };
 
+const LoadingContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 300px;
+`;
+
+const LoadingSpinner = styled.div`
+  border: 4px solid ${({ theme }) => theme.colors.gray};
+  border-top: 4px solid ${({ theme }) => theme.colors.red};
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+`;
+
 const LoadingText = styled.div`
-  text-align: center;
+  margin-top: 20px;
   font-size: 18px;
+  color: ${({ theme }) => theme.colors.gray};
 `;
 
 const ErrorText = styled.div`

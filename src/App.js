@@ -34,6 +34,7 @@ function App() {
           <Route path="/fail/:problemId" element={<Fail />} />
           <Route path="/submit/:problemId" element={<Submit />} />
           <Route path="/book" element={<ProblemBook />} />
+          <Route path="/book/:collectionId" element={<ProblemBook />} />
           <Route path="/mycodelist/:userProfileId" element={<MycodeList />} />
         </Routes>
         <ScrollToTop />

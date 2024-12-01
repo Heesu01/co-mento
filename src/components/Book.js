@@ -23,7 +23,12 @@ const Book = () => {
               title: problem.title,
             })
           );
-          return { title: book.name, tags: book.description, problems };
+          return {
+            id: book.id,
+            title: book.name,
+            tags: book.description,
+            problems,
+          };
         })
       );
 
@@ -52,11 +57,11 @@ const Book = () => {
                   key={problem.problemId}
                   onClick={() => navigate(`/problem/${problem.problemId}`)}
                 >
-                  {problem.title}
+                  {`#${problem.problemId} ${problem.title}`}
                 </Problem>
               ))}
             </List>
-            <Cover>
+            <Cover onClick={() => navigate(`/book/${book.id}`)}>
               <Title>{book.title}</Title>
               <Tag>{book.tags}</Tag>
             </Cover>
@@ -113,10 +118,12 @@ const Item = styled.div`
 
 const List = styled.div`
   display: flex;
+  max-height: 240px;
   flex-direction: column;
   color: ${(props) => props.theme.colors.white};
   line-height: 2em;
   padding: 20px;
+  overflow-y: auto;
 `;
 
 const Problem = styled.div`
@@ -137,6 +144,7 @@ const Cover = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
+  cursor: pointer;
 `;
 const Title = styled.p`
   font-weight: 700;

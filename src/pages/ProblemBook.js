@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { Axios } from "../api/Api";
 import Select from "react-select";
@@ -7,6 +7,7 @@ import Pagination from "../components/Pagination";
 
 const ProblemBook = () => {
   const navigate = useNavigate();
+  const { collectionId } = useParams();
   const [problemSets, setProblemSets] = useState([]);
   const [selectedSet, setSelectedSet] = useState(null);
   const [problems, setProblems] = useState([]);
@@ -27,10 +28,10 @@ const ProblemBook = () => {
     }
   };
 
-  const fetchProblems = async (collectionId, page = 1) => {
+  const fetchProblems = async (id, page = 1) => {
     try {
       const response = await Axios.get("/problems", {
-        params: { collection: collectionId, page: page - 1 },
+        params: { collection: id, page: page - 1 },
       });
       const { previewList, paginationResponse } = response.data.data;
       setProblems(previewList);
@@ -41,43 +42,30 @@ const ProblemBook = () => {
     }
   };
 
+  useEffect(() => {
+    fetchProblemBooks();
+  }, []);
+
+  useEffect(() => {
+    if (problemSets.length > 0 && collectionId) {
+      const initialSet = problemSets.find((set) => set.value === collectionId);
+      if (initialSet) {
+        setSelectedSet(initialSet);
+        fetchProblems(collectionId);
+      }
+    }
+  }, [problemSets, collectionId]);
+
   const handleSelectChange = (selectedOption) => {
     setSelectedSet(selectedOption);
     fetchProblems(selectedOption.value);
+    navigate(`/book/${selectedOption.value}`);
   };
 
   const handlePageChange = (page) => {
     if (selectedSet) {
       fetchProblems(selectedSet.value, page);
     }
-  };
-
-  useEffect(() => {
-    fetchProblemBooks();
-  }, []);
-
-  const customStyles = {
-    control: (base) => ({
-      ...base,
-      outline: "none",
-      boxShadow: "none",
-      borderColor: "#ddd",
-      borderRadius: "8px",
-      cursor: "pointer",
-      "&:hover": { borderColor: "#aaa" },
-    }),
-    placeholder: (base) => ({
-      ...base,
-      color: "#888",
-      cursor: "pointer",
-    }),
-    option: (base, { isFocused }) => ({
-      ...base,
-      backgroundColor: isFocused ? "#f0f0f0" : "white",
-      color: "black",
-      cursor: "pointer",
-      padding: "12px 15px",
-    }),
   };
 
   return (
@@ -90,6 +78,7 @@ const ProblemBook = () => {
         <Select
           onChange={handleSelectChange}
           options={problemSets}
+          value={selectedSet}
           placeholder="문제집을 선택하세요"
           styles={customStyles}
         />
@@ -119,6 +108,30 @@ const ProblemBook = () => {
       )}
     </Container>
   );
+};
+
+const customStyles = {
+  control: (base) => ({
+    ...base,
+    outline: "none",
+    boxShadow: "none",
+    borderColor: "#ddd",
+    borderRadius: "8px",
+    cursor: "pointer",
+    "&:hover": { borderColor: "#aaa" },
+  }),
+  placeholder: (base) => ({
+    ...base,
+    color: "#888",
+    cursor: "pointer",
+  }),
+  option: (base, { isFocused }) => ({
+    ...base,
+    backgroundColor: isFocused ? "#f0f0f0" : "white",
+    color: "black",
+    cursor: "pointer",
+    padding: "12px 15px",
+  }),
 };
 
 const Container = styled.div`
