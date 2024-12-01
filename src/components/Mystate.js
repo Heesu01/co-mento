@@ -41,24 +41,29 @@ const Mystate = () => {
     <Container>
       <Top>
         <p>진행도</p>
-        <p>더보기</p>
       </Top>
       <ItemBox>
         <Item>
           <Title>경험치</Title>
           <ExperienceBox>
             <ExperienceValue>{experience}</ExperienceValue>
-            <Label>Co-Mento 랭킹 {ranking}위</Label>
+            <Label>Co-Mento 랭킹 {ranking || "N/A"}위</Label>
           </ExperienceBox>
         </Item>
-        {collectionProgresses.map((collection) => (
-          <Item key={collection.id}>
-            <Title>{collection.name}</Title>
-            <CircleBox>
-              <CircularProgressComponent percentage={collection.progress} />
-            </CircleBox>
-          </Item>
-        ))}
+        {collectionProgresses.length > 0 ? (
+          collectionProgresses.map((collection) => (
+            <Item key={collection.id}>
+              <Title>{collection.name}</Title>
+              <CircleBox>
+                <CircularProgressComponent percentage={collection.progress} />
+              </CircleBox>
+            </Item>
+          ))
+        ) : (
+          <NoProgressMessage>
+            더 많은 진행 정보를 확인하려면 문제집 풀이에 도전하세요!
+          </NoProgressMessage>
+        )}
       </ItemBox>
     </Container>
   );
@@ -70,6 +75,7 @@ const Container = styled.div`
   background-color: ${(props) => props.theme.colors.deepPink};
   border-radius: 5px;
   padding: 40px 40px;
+  min-height: 300px;
 `;
 const Top = styled.div`
   display: flex;
@@ -81,23 +87,31 @@ const Top = styled.div`
   }
 `;
 const ItemBox = styled.div`
+  width: 100%;
   padding: 40px 0;
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
+  justify-content: center;
+  align-content: flex-start;
 `;
+
 const Item = styled.div`
   background-color: ${(props) => props.theme.colors.black2};
-  width: 30%;
+  flex: 1 1 calc(25% - 20px);
+  min-width: 250px;
+  max-width: 300px;
   height: 200px;
   border-radius: 10px;
   padding: 20px;
   transition: transform 0.3s, box-shadow 0.3s;
+
   &:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
   }
 `;
+
 const Title = styled.div`
   color: ${(props) => props.theme.colors.white};
   text-align: center;
@@ -175,6 +189,32 @@ const Percentage = styled.text`
   dominant-baseline: central;
   transform-origin: center;
   transform: rotate(90deg);
+`;
+
+const NoProgressMessage = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-size: 18px;
+  color: ${(props) => props.theme.colors.red};
+  font-weight: 600;
+  margin-left: 5vw;
+  padding: 20px;
+  background-color: ${(props) => props.theme.colors.beige};
+  border: 2px solid ${(props) => props.theme.colors.red};
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  animation: ${keyframes`
+    0% {
+      transform: translateY(-10px);
+      opacity: 0;
+    }
+    100% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  `} 0.7s ease-out;
 `;
 
 export default Mystate;

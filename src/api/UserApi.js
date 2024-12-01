@@ -41,4 +41,5 @@ export const fetchCollectionProgress = async () => {
   return response.data.data.collectionProgresses.filter(
     (collection) => collection.progress > 0
   );
+  // return response.data.data.collectionProgresses;
 };
