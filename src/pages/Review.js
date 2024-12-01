@@ -4,7 +4,10 @@ import styled from "styled-components";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
+import {
+  coy,
+  vscDarkPlus,
+} from "react-syntax-highlighter/dist/esm/styles/prism";
 import Button from "../components/Button";
 import AiIcon from "../assets/ai.svg";
 import { Axios } from "../api/Api";
@@ -88,7 +91,31 @@ const Review = () => {
       </ReviewTitle>
       <ReviewBox>
         <SubmitBox>
-          <CodeBlock>{code || "제출된 코드가 없습니다."}</CodeBlock>
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
+            components={{
+              code({ node, inline, className, children, ...props }) {
+                const match = /language-(\w+)/.exec(className || "");
+                return !inline && match ? (
+                  <SyntaxHighlighter
+                    style={coy}
+                    language={match[1]}
+                    PreTag="div"
+                    customStyle={{ fontSize: "14px", lineHeight: "1.3" }}
+                    {...props}
+                  >
+                    {String(children).replace(/\n$/, "")}
+                  </SyntaxHighlighter>
+                ) : (
+                  <code className={className} {...props}>
+                    {children}
+                  </code>
+                );
+              },
+            }}
+          >
+            {`\`\`\`javascript\n${code || "제출된 코드가 없습니다."}\n\`\`\``}
+          </ReactMarkdown>
         </SubmitBox>
 
         <AI onClick={handleBackgroundClick}>
@@ -245,12 +272,6 @@ const SubmitBox = styled.div`
   padding: 20px;
   background-color: ${(props) => props.theme.colors.white};
   word-break: break-word;
-`;
-const CodeBlock = styled.pre`
-  font-size: 14px;
-  line-height: 1.5;
-  white-space: pre-wrap;
-  word-wrap: break-word;
 `;
 const AI = styled.div`
   width: 47%;
