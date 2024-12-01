@@ -23,6 +23,9 @@ const Header = () => {
     } catch (error) {
       console.error("로그아웃 오류:", error);
       alert("로그아웃에 실패했습니다. 다시 시도해 주세요.");
+      localStorage.removeItem("token");
+      localStorage.removeItem("userProfileId");
+      window.location.reload();
     }
   };
 
@@ -43,7 +46,7 @@ const Header = () => {
           <Item onClick={() => navigate("/problemlist")}>문제</Item>
           <Item onClick={() => navigate("/book")}>문제집</Item>
           <Item onClick={() => navigate("/rank")}>랭킹</Item>
-          <Item onClick={() => navigate("/board")}>게시판</Item>
+          {/* <Item onClick={() => navigate("/board")}>게시판</Item> */}
         </Menu>
       </Left>
       <BtnBox>
