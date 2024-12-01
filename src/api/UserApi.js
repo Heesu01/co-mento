@@ -7,7 +7,7 @@ export const fetchUserProfile = async (userProfileId) => {
 
 export const fetchUserSolutions = async (userProfileId, page) => {
   const response = await Axios.get(`/solutions`, {
-    params: { userProfileId, page: page - 1 },
+    params: { "profile-id": userProfileId, page: page - 1 },
   });
 
   const { solutionList, paginationResponse } = response.data.data;
