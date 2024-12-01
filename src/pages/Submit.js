@@ -13,16 +13,16 @@ const Submit = () => {
   const { problemId } = useParams();
 
   const options = [
-    { value: "python", label: "파이썬" },
-    { value: "java", label: "자바" },
     { value: "c", label: "C언어" },
     { value: "c#", label: "C#" },
     { value: "c++", label: "C++" },
-    { value: "kotlin", label: "코틀린" },
-    { value: "javascript", label: "자바스크립트" },
-    { value: "r", label: "R" },
-    { value: "php", label: "php" },
     { value: "go", label: "go" },
+    { value: "java", label: "java" },
+    { value: "javascript", label: "javascript" },
+    { value: "kotlin", label: "kotlin" },
+    { value: "python", label: "python" },
+    { value: "php", label: "php" },
+    { value: "r", label: "R" },
   ];
 
   const customStyles = {
