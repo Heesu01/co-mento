@@ -4,6 +4,7 @@ import Button from "../components/Button";
 import { useNavigate, useParams } from "react-router-dom";
 import Select from "react-select";
 import { Axios } from "../api/Api";
+import Editor from "@monaco-editor/react";
 
 const Submit = () => {
   const [selected, setSelected] = useState("");
@@ -56,8 +57,8 @@ const Submit = () => {
     else setSelected("");
   };
 
-  const handleCodeChange = (e) => {
-    setCode(e.target.value);
+  const handleCodeChange = (value) => {
+    setCode(value || "");
   };
 
   const handleSubmit = async () => {
@@ -130,13 +131,20 @@ const Submit = () => {
           </TopBox>
           <CodeBox>
             <p>소스코드</p>
-            <InputCodeBox>
-              <InputCode
-                placeholder="코드를 입력해주세요"
+            <EditorContainer>
+              <Editor
+                height="500px"
+                language={selected || "plaintext"}
                 value={code}
                 onChange={handleCodeChange}
+                theme="vs"
+                options={{
+                  fontSize: 16,
+                  minimap: { enabled: false },
+                  scrollBeyondLastLine: false,
+                }}
               />
-            </InputCodeBox>
+            </EditorContainer>
           </CodeBox>
         </InputBox>
         <BtnBox>
@@ -198,42 +206,17 @@ const TopBox = styled.div`
   align-items: center;
   justify-content: space-between;
 `;
+
 const CodeBox = styled.div`
   background-color: ${({ theme }) => theme.colors.beige2};
-  width: 100%;
-  min-height: 500px;
-  border-radius: 15px;
-  display: flex;
-  flex-direction: column;
-  justify-content: end;
-  align-items: center;
-  padding: 0 6px 6px;
-  p {
-    width: 100%;
-    font-size: 20px;
-    font-weight: 600;
-    padding-left: 10px;
-    height: 50px;
-    display: flex;
-    align-items: center;
-  }
-`;
-
-const InputCodeBox = styled.div`
-  background-color: white;
-  width: 100%;
   border-radius: 15px;
   padding: 15px;
-  min-height: 450px;
 `;
 
-const InputCode = styled.textarea`
-  width: 100%;
-  min-height: 450px;
-  outline: none;
-  resize: none;
-  font-size: 15px;
-  line-height: 1.5em;
+const EditorContainer = styled.div`
+  margin-top: 10px;
+  border-radius: 15px;
+  overflow: hidden;
 `;
 
 const BtnBox = styled.div`
