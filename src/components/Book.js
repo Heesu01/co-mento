@@ -57,7 +57,7 @@ const Book = () => {
                   key={problem.problemId}
                   onClick={() => navigate(`/problem/${problem.problemId}`)}
                 >
-                  {problem.title}
+                  {`#${problem.problemId} ${problem.title}`}
                 </Problem>
               ))}
             </List>
@@ -118,10 +118,12 @@ const Item = styled.div`
 
 const List = styled.div`
   display: flex;
+  max-height: 240px;
   flex-direction: column;
   color: ${(props) => props.theme.colors.white};
   line-height: 2em;
   padding: 20px;
+  overflow-y: auto;
 `;
 
 const Problem = styled.div`
