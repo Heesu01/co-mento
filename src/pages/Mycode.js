@@ -81,6 +81,7 @@ const Mycode = () => {
                       style={twilight}
                       language={match[1]}
                       PreTag="div"
+                      customStyle={{ fontSize: "14px" }}
                       {...props}
                     >
                       {String(children).replace(/\n$/, "")}
@@ -163,8 +164,8 @@ const Info = styled.p`
 
 const ContentWrapper = styled.div`
   display: flex;
-  gap: 20px;
-  justify-content: space-between;
+  gap: 30px;
+  justify-content: center;
 `;
 
 const MainCode = styled.div`
@@ -174,12 +175,13 @@ const MainCode = styled.div`
   border-radius: 15px;
   background-color: ${(props) => props.theme.colors.beige};
   box-shadow: 0px 5px 5px -1px ${(props) => props.theme.colors.gray};
-  padding: 20px;
+  padding: 20px 10px 10px 10px;
 `;
 
 const SourceInfoTitle = styled.h2`
   font-weight: 600;
   font-size: 20px;
+  margin-left: 15px;
   margin-bottom: 15px;
   color: ${({ theme }) => theme.colors.black};
 `;
@@ -199,13 +201,14 @@ const Feedback = styled.div`
   height: auto;
   border-radius: 15px;
   box-shadow: 0px 5px 5px -1px ${(props) => props.theme.colors.gray};
-  padding: 20px;
+  padding: 20px 10px 10px 10px;
   background-color: ${(props) => props.theme.colors.beige};
 `;
 
 const FeedbackTitle = styled.h2`
   font-weight: 600;
   font-size: 20px;
+  margin-left: 15px;
   margin-bottom: 15px;
   color: ${({ theme }) => theme.colors.black};
 `;
