@@ -267,6 +267,8 @@ const TextContents = styled.div`
   margin: 20px 0;
   min-height: 150px;
   line-height: 1.3em;
+  white-space: pre-wrap;
+  word-wrap: break-word;
 `;
 
 const AllExampleBox = styled.div`
@@ -288,6 +290,8 @@ const SmallContents = styled.div`
   min-height: 150px;
   margin-top: 20px;
   line-height: 1.3em;
+  white-space: pre-wrap;
+  word-wrap: break-word;
 `;
 
 const BottomBox = styled.div`

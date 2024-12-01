@@ -201,6 +201,8 @@ const TextContents = styled.div`
   padding: 20px;
   margin: 20px 0;
   min-height: 150px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
 `;
 
 const AllExampleBox = styled.div`
@@ -222,6 +224,8 @@ const SmallContents = styled.div`
   padding: 20px;
   min-height: 150px;
   margin-top: 20px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
 `;
 
 const ReviewBox = styled.div`
