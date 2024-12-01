@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { login } from "../api/AuthApi";
 import { useAuth } from "../context/AuthContext";
+import { SiNaver } from "react-icons/si";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -88,6 +89,14 @@ const Login = () => {
           <span onClick={() => navigate("/auth/join")}>회원가입</span>
         </P>
         <Btn type="submit">로그인</Btn>
+        <SocialLogin>
+          {/* <NaverButton href="https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=BhvXMbrSxzU2jKkhM31a&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Fauth%2Fredirect%2Fnaver&state=1234"> */}
+          {/* <NaverButton href="https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=BhvXMbrSxzU2jKkhM31a&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Fauth%2Fredirect%2Fnaver&state=1234"> */}
+          <NaverButton href="https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=BhvXMbrSxzU2jKkhM31a&redirect_uri=https%3A%2F%2Fapi.likelion-crossover-team2.com%2Fauth%2Fredirect%2Fnaver&state=1234">
+            <SiNaver />
+            <p>네이버 로그인 하기</p>
+          </NaverButton>
+        </SocialLogin>
       </LoginBox>
     </Container>
   );
@@ -168,6 +177,38 @@ const Error = styled.div`
   font-size: 12px;
   margin-left: 6px;
   margin-top: 5px;
+`;
+
+const SocialLogin = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 10px;
+`;
+
+const NaverButton = styled.a`
+  text-decoration: none;
+  background-color: #03cf5d;
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: background-color 0.3s;
+  p {
+    color: white;
+    font-weight: 600;
+  }
+
+  &:hover {
+    background-color: #028a43;
+  }
+  svg {
+    font-size: 1rem;
+    color: white;
+  }
 `;
 
 export default Login;
