@@ -70,7 +70,7 @@ const Mypage = () => {
   return (
     <Container>
       <UserInfo>
-        <Level>경험치: {userData ? userData.experience : "0"}</Level>
+        <Level>경험치 {userData ? userData.experience : "0"}</Level>
         <UserName>{userData ? userData.name : "유저이름"}</UserName>
       </UserInfo>
 
@@ -81,9 +81,12 @@ const Mypage = () => {
               active={activeTab === "myActivity"}
               onClick={() => handleTabClick("myActivity")}
             >
-              나의활동
+              나의 활동
             </Button>
-            <Button onClick={handleSubmittedListClick}>제출한 목록보기</Button>
+            <Button onClick={handleSubmittedListClick}>
+              제출한 <br />
+              목록보기
+            </Button>
           </ButtonContainer>
         </MyAccount>
 
