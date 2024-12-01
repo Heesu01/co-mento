@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { fetchUserProfile } from "../api/UserApi";
 import { useParams, useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
 import { Axios } from "../api/Api";
 
 const Mypage = () => {
@@ -67,6 +66,10 @@ const Mypage = () => {
     navigate(`/mycodelist/${userProfileId}`);
   };
 
+  const handleNavigateToProblem = (id) => {
+    navigate(`/problem/${id}`);
+  };
+
   return (
     <Container>
       <UserInfo>
@@ -98,10 +101,11 @@ const Mypage = () => {
                 <TextContents>
                   {userData?.likedProblemIds?.length ? (
                     likedProblemTitles.map(({ id, title }, index) => (
-                      <Text key={index}>
-                        <Link to={`/problem/${id}`}>
-                          #{id} {title}
-                        </Link>
+                      <Text
+                        key={index}
+                        onClick={() => handleNavigateToProblem(id)}
+                      >
+                        #{id} {title}
                       </Text>
                     ))
                   ) : (
@@ -115,10 +119,11 @@ const Mypage = () => {
                 <TextContents>
                   {solvedProblemTitles.length ? (
                     solvedProblemTitles.map((problem, index) => (
-                      <Text key={index}>
-                        <Link to={`/problem/${problem.id}`}>
-                          #{problem.id} {problem.title}
-                        </Link>
+                      <Text
+                        key={index}
+                        onClick={() => handleNavigateToProblem(problem.id)}
+                      >
+                        #{problem.id} {problem.title}
                       </Text>
                     ))
                   ) : (
@@ -132,10 +137,11 @@ const Mypage = () => {
                 <TextContents>
                   {failedProblemTitles.length ? (
                     failedProblemTitles.map((problem, index) => (
-                      <Text key={index}>
-                        <Link to={`/problem/${problem.id}`}>
-                          #{problem.id} {problem.title}
-                        </Link>
+                      <Text
+                        key={index}
+                        onClick={() => handleNavigateToProblem(problem.id)}
+                      >
+                        #{problem.id} {problem.title}
                       </Text>
                     ))
                   ) : (
@@ -260,6 +266,13 @@ const TextContents = styled.div`
 const Text = styled.p`
   margin: 5px 0;
   font-size: 16px;
+  text-decoration: none;
+  color: ${(props) => props.theme.colors.black};
+  cursor: pointer;
+
+  &:hover {
+    color: ${(props) => props.theme.colors.red};
+  }
 `;
 
 export default Mypage;
