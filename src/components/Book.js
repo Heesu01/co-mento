@@ -23,7 +23,12 @@ const Book = () => {
               title: problem.title,
             })
           );
-          return { title: book.name, tags: book.description, problems };
+          return {
+            id: book.id,
+            title: book.name,
+            tags: book.description,
+            problems,
+          };
         })
       );
 
@@ -56,7 +61,7 @@ const Book = () => {
                 </Problem>
               ))}
             </List>
-            <Cover>
+            <Cover onClick={() => navigate(`/book/${book.id}`)}>
               <Title>{book.title}</Title>
               <Tag>{book.tags}</Tag>
             </Cover>
@@ -137,6 +142,7 @@ const Cover = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
+  cursor: pointer;
 `;
 const Title = styled.p`
   font-weight: 700;
