@@ -47,7 +47,11 @@ const Mystate = () => {
           <Title>경험치</Title>
           <ExperienceBox>
             <ExperienceValue>{experience}</ExperienceValue>
-            <Label>Co-Mento 랭킹 {ranking || "N/A"}위</Label>
+            {experience > 0 ? (
+              <Label>Co-Mento 랭킹 {ranking || "N/A"}위</Label>
+            ) : (
+              <Label>문제를 풀어 경험치를 올리세요!</Label>
+            )}
           </ExperienceBox>
         </Item>
         {collectionProgresses.length > 0 ? (
