@@ -4,13 +4,16 @@ import Banner from "../components/Banner";
 import Mystate from "../components/Mystate";
 import Difficulty from "../components/Difficulty";
 import Book from "../components/Book";
+import { useAuth } from "../context/AuthContext";
 
 const Main = () => {
+  const { isLoggedIn } = useAuth();
+
   return (
     <Container>
       <Banner />
       <Under>
-        <Mystate />
+        {isLoggedIn && <Mystate />}
         <Difficulty />
         <Book />
       </Under>
@@ -20,6 +23,7 @@ const Main = () => {
 
 const Container = styled.div`
   width: 100%;
+  margin-bottom: 70px;
 `;
 const Under = styled.div`
   padding-top: 100px;

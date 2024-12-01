@@ -97,7 +97,7 @@ const Problem = () => {
           </TitleBox>
           <InfoBox>
             <Info>{problemData.timeLimit}초</Info>
-            <Info>{problemData.memoryLimit}MB</Info>
+            <Info>{problemData.memoryLimit}KB</Info>
             <Info>{problemData.numberOfProblemSolution}</Info>
             <Info>{problemData.numberOfCorrectUser}</Info>
             <Info>

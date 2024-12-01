@@ -2,12 +2,12 @@ import { Axios } from "./Api";
 
 export const fetchUserProfile = async (userProfileId) => {
   const response = await Axios.get(`/users/${userProfileId}`);
-  return response.data.data;
+  return response.data;
 };
 
 export const fetchUserSolutions = async (userProfileId, page) => {
   const response = await Axios.get(`/solutions`, {
-    params: { userProfileId, page: page - 1 },
+    params: { "profile-id": userProfileId, page: page - 1 },
   });
 
   const { solutionList, paginationResponse } = response.data.data;
@@ -41,4 +41,5 @@ export const fetchCollectionProgress = async () => {
   return response.data.data.collectionProgresses.filter(
     (collection) => collection.progress > 0
   );
+  // return response.data.data.collectionProgresses;
 };

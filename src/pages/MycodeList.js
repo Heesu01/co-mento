@@ -35,9 +35,6 @@ const MycodeList = () => {
 
   const handlePageChange = (page) => setCurrentPage(page);
 
-  if (loading) return <p>제출코드를 불러오고 있습니다...</p>;
-  if (!problems.length) return <p>제출된 코드가 없습니다.</p>;
-
   return (
     <Container>
       <ListBoxTitle>제출 코드 목록</ListBoxTitle>
@@ -50,21 +47,27 @@ const MycodeList = () => {
           <ClassSub>제출자</ClassSub>
           <Check>결과</Check>
         </Top>
-        {problems.map((problem) => (
-          <Item
-            key={problem.solutionId}
-            onClick={() => navigate(`/mycode/${problem.solutionId}`)}
-          >
-            <ClassNum>{problem.num}</ClassNum>
-            <ClassTit>{problem.title}</ClassTit>
-            <ClassLang>{problem.language}</ClassLang>
-            <ClassStime>{problem.subtime}</ClassStime>
-            <ClassSub>{problem.submitter}</ClassSub>
-            <Check>
-              {problem.success ? <FaCheck color="green" /> : <p>X</p>}
-            </Check>
-          </Item>
-        ))}
+        {loading ? (
+          <Message>제출 코드를 불러오고 있습니다...</Message>
+        ) : problems.length > 0 ? (
+          problems.map((problem) => (
+            <Item
+              key={problem.solutionId}
+              onClick={() => navigate(`/mycode/${problem.solutionId}`)}
+            >
+              <ClassNum>{problem.num}</ClassNum>
+              <ClassTit>{problem.title}</ClassTit>
+              <ClassLang>{problem.language}</ClassLang>
+              <ClassStime>{problem.subtime}</ClassStime>
+              <ClassSub>{problem.submitter}</ClassSub>
+              <Check>
+                {problem.success ? <FaCheck color="green" /> : <p>X</p>}
+              </Check>
+            </Item>
+          ))
+        ) : (
+          <EmptyMessage>제출한 코드가 없습니다.</EmptyMessage>
+        )}
       </ListBox>
 
       <PaginationContainer>
@@ -147,6 +150,18 @@ const Check = styled.div`
     font-weight: 800;
     color: ${({ theme }) => theme.colors.red};
   }
+`;
+
+const Message = styled.div`
+  text-align: center;
+  font-size: 16px;
+  font-weight: 500;
+  margin: 20px 0;
+`;
+
+const EmptyMessage = styled(Message)`
+  color: ${({ theme }) => theme.colors.gray};
+  margin-top: 100px;
 `;
 
 const PaginationContainer = styled.div`

@@ -91,21 +91,26 @@ const ItemBox = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 30px;
 `;
 
 const Item = styled.div`
   background-color: ${(props) => props.theme.colors.black2};
-  width: 30%;
+  flex: 1 1 calc(33.33% - 20px);
+  min-width: 250px;
   height: 400px;
   border-radius: 10px;
   position: relative;
   overflow: hidden;
   transition: transform 0.3s, box-shadow 0.3s;
+
   &:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
   }
 `;
+
 const List = styled.div`
   display: flex;
   flex-direction: column;
