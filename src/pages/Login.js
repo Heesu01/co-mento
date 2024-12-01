@@ -90,8 +90,6 @@ const Login = () => {
         </P>
         <Btn type="submit">로그인</Btn>
         <SocialLogin>
-          {/* <NaverButton href="https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=BhvXMbrSxzU2jKkhM31a&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Fauth%2Fredirect%2Fnaver&state=1234"> */}
-          {/* <NaverButton href="https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=BhvXMbrSxzU2jKkhM31a&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Fauth%2Fredirect%2Fnaver&state=1234"> */}
           <NaverButton href="https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=BhvXMbrSxzU2jKkhM31a&redirect_uri=https%3A%2F%2Fapi.likelion-crossover-team2.com%2Fauth%2Fredirect%2Fnaver&state=1234">
             <SiNaver />
             <p>네이버 로그인 하기</p>
