@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Axios } from "../api/Api";
@@ -6,110 +6,57 @@ import { Axios } from "../api/Api";
 const Difficulty = () => {
   const navigate = useNavigate();
   const [difficulties, setDifficulties] = useState([]);
-  const observerRefs = useRef({});
-  const isFetching = useRef({});
+  const [loading, setLoading] = useState(false);
 
-  const fetchDifficulties = useCallback(async (level, page = 0) => {
-    if (isFetching.current[level]) return;
-    isFetching.current[level] = true;
+  const fetchAllPagesForLevel = async (level) => {
+    let allProblems = [];
+    let currentPage = 0;
+    let totalPage = 1;
 
-    try {
-      const response = await Axios.get(`/problems`, {
-        params: { level, page },
-      });
-      const { previewList, paginationResponse } = response.data.data;
+    while (currentPage < totalPage) {
+      try {
+        setLoading(true);
+        const response = await Axios.get(`/problems`, {
+          params: { level, page: currentPage },
+        });
 
-      setDifficulties((prev) => {
-        const updatedDifficulties = [...prev];
-        const difficultyIndex = updatedDifficulties.findIndex(
-          (difficulty) => difficulty.level === level
-        );
+        const { previewList, paginationResponse } = response.data.data;
+        allProblems = [...allProblems, ...previewList];
 
-        if (difficultyIndex === -1) {
-          updatedDifficulties.push({
-            level,
-            problems: previewList,
-            currentPage: paginationResponse.currentPage,
-            totalPage: paginationResponse.totalPage,
-          });
-        } else {
-          const existingProblemIds = new Set(
-            updatedDifficulties[difficultyIndex].problems.map(
-              (problem) => problem.problemId
-            )
-          );
-
-          const newProblems = previewList.filter(
-            (problem) => !existingProblemIds.has(problem.problemId)
-          );
-
-          updatedDifficulties[difficultyIndex].problems = [
-            ...updatedDifficulties[difficultyIndex].problems,
-            ...newProblems,
-          ];
-          updatedDifficulties[difficultyIndex].currentPage =
-            paginationResponse.currentPage;
-        }
-
-        return updatedDifficulties;
-      });
-    } catch (error) {
-      console.error(`난이도 ${level}의 문제를 가져오는 중 오류 발생:`, error);
-    } finally {
-      isFetching.current[level] = false;
+        currentPage = paginationResponse.currentPage + 1;
+        totalPage = paginationResponse.totalPage;
+      } catch (error) {
+        console.error(`난이도 ${level}의 문제를 가져오는 중 오류 발생:`, error);
+        break;
+      }
     }
+
+    return { level, problems: allProblems };
+  };
+
+  useEffect(() => {
+    const initializeDifficulties = async () => {
+      try {
+        const levels = [1, 2, 3];
+        const difficultiesData = [];
+        for (const level of levels) {
+          const difficulty = await fetchAllPagesForLevel(level);
+          difficultiesData.push(difficulty);
+        }
+        setDifficulties(difficultiesData);
+      } catch (error) {
+        console.error("난이도별 초기 데이터를 가져오는 중 오류 발생:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    initializeDifficulties();
   }, []);
 
-  const initializeDifficulties = useCallback(() => {
-    try {
-      const levels = [1, 2, 3];
-      levels.forEach((level) => fetchDifficulties(level));
-    } catch (error) {
-      console.error("난이도별 초기 데이터를 가져오는 중 오류 발생:", error);
-    }
-  }, [fetchDifficulties]);
-
-  const handleObserver = useCallback(
-    (entries, level) => {
-      const target = entries[0];
-      if (target.isIntersecting) {
-        const difficulty = difficulties.find((d) => d.level === level);
-        if (difficulty && difficulty.currentPage + 1 < difficulty.totalPage) {
-          fetchDifficulties(level, difficulty.currentPage + 1);
-        }
-      }
-    },
-    [difficulties, fetchDifficulties]
-  );
-
-  useEffect(() => {
-    const currentObservers = {};
-
-    difficulties.forEach((difficulty) => {
-      if (!observerRefs.current[difficulty.level]) {
-        observerRefs.current[difficulty.level] = new IntersectionObserver(
-          (entries) =>
-            handleObserver(
-              entries,
-              observerRefs.current[difficulty.level],
-              difficulty.level
-            )
-        );
-      }
-      currentObservers[difficulty.level] =
-        observerRefs.current[difficulty.level];
-    });
-
-    return () => {
-      Object.values(currentObservers).forEach((observer) =>
-        observer.disconnect()
-      );
-    };
-  }, [difficulties, handleObserver]);
-
-  useEffect(() => {
-    initializeDifficulties();
-  }, [initializeDifficulties]);
+  if (loading) {
+    return <LoadingText>문제를 불러오는 중...</LoadingText>;
+  }
 
   return (
     <Container>
@@ -138,13 +85,6 @@ const Difficulty = () => {
                   {`#${problem.problemId} ${problem.title}`}
                 </Problem>
               ))}
-              <div
-                ref={(el) => {
-                  if (observerRefs.current[difficulty.level] && el) {
-                    observerRefs.current[difficulty.level].observe(el);
-                  }
-                }}
-              />
             </List>
           </Item>
         ))}
@@ -152,6 +92,11 @@ const Difficulty = () => {
     </Container>
   );
 };
+
+const LoadingText = styled.div`
+  text-align: center;
+  font-size: 18px;
+`;
 
 const Container = styled.div`
   width: 100%;
