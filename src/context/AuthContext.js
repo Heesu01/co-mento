@@ -6,21 +6,32 @@ const getCookie = (name) => {
   const cookieValue = document.cookie
     .split("; ")
     .find((row) => row.startsWith(`${name}=`));
-  return cookieValue ? decodeURIComponent(cookieValue.split("=")[1]) : null; // 디코딩된 값 반환
+  return cookieValue ? decodeURIComponent(cookieValue.split("=")[1]) : null;
 };
 
 export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const checkLoginStatus = () => {
-    const accessToken = getCookie("AccessToken");
-    const userProfileId = getCookie("userProfileId");
+    let userProfileId = localStorage.getItem("userProfileId");
 
-    if (accessToken || userProfileId) {
-      console.log("AccessToken:", accessToken);
-      console.log("userProfileId:", userProfileId);
+    if (!userProfileId) {
+      console.log(
+        "userProfileId not found in localStorage, checking cookies..."
+      );
+      userProfileId = getCookie("userProfileId");
 
-      localStorage.setItem("userProfileId", userProfileId);
+      if (userProfileId) {
+        localStorage.setItem("userProfileId", userProfileId);
+        console.log(
+          "userProfileId found in cookies and saved to localStorage:",
+          userProfileId
+        );
+      }
+    }
+
+    if (userProfileId) {
+      console.log("Logged in with userProfileId:", userProfileId);
       setIsLoggedIn(true);
     } else {
       console.log("Not logged in");
