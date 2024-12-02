@@ -16,7 +16,8 @@ const Problem = () => {
   const toggleHeart = async () => {
     try {
       const token = localStorage.getItem("token");
-      if (!token) {
+      const userProfileId = localStorage.getItem("userProfileId");
+      if (!userProfileId) {
         alert("로그인이 필요합니다.");
         return;
       }
